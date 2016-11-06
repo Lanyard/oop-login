@@ -4,7 +4,7 @@
     processIsolation="false"
     stopOnFailure="false"
     syntaxCheck="false"
-    bootstrap="./tests/autoload.php"
+    bootstrap="tests/autoload.php"
     >
     <php>
         <ini name="memory_limit" value="-1"/>
@@ -13,17 +13,15 @@
 
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="App Test Suite">
-            <directory>./tests/TestCase</directory>
+        <testsuite name="OopLogin Test Suite">
+            <directory>tests/</directory>
         </testsuite>
         <!-- Add plugin test suites here. -->
     </testsuites>
 
-    <!-- Ignore vendor tests in code coverage reports -->
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./plugins/*/src/</directory>
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
 </phpunit>
