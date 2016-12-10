@@ -2,6 +2,8 @@
 
 namespace OopLogin\Model\Entity;
 
+use InvalidArgumentException;
+
 /**
  * Represents a single user in the database.
  */
@@ -9,41 +11,33 @@ class User
 {
     /**
     * The primary id of the user in the database
-    *
-    * @var integer
     */
     protected $id;
 
     /**
     * The name of the user
-    *
-    * @var string
     */
     protected $username;
 
     /**
     * The user's email address
-    *
-    * @var string
     */
     protected $email;
 
     /**
-    * The user's password
-    *
-    * @var string
+    * The user's hashed password
     */
     protected $password;
 
     /**
     * Constructor
     *
-    * @param integer $id The id of the user record.
-    * @param string $username The name of the user
-    * @param string $email The user's email address
-    * @param string $password the user's password
+    * @param $id The id of the user record
+    * @param $username The name of the user
+    * @param $email The user's email address
+    * @param $password the user's password
     */
-    public function __construct($id = -1, $username = '', $email = '', $password = '')
+    public function __construct($id = '', $username = '', $email = '', $password = '')
     {
         $this->id = $id;
         $this->username = $username;
@@ -53,6 +47,8 @@ class User
 
     /**
     * Get the id of the user record.
+    *
+    * @return int
     */
     public function id()
     {
@@ -61,6 +57,8 @@ class User
 
     /**
     * Get the user's name.
+    *
+    * @return string
     */
     public function username()
     {
@@ -69,6 +67,8 @@ class User
 
     /**
     * Get the user's email address.
+    *
+    * @return string
     */
     public function email()
     {
@@ -77,6 +77,8 @@ class User
 
     /**
     * Get the user's password.
+    *
+    * @return string
     */
     public function password()
     {

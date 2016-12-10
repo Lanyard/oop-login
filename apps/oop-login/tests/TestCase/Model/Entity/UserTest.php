@@ -4,6 +4,7 @@ namespace OopLogin\Test\TestCase\Model;
 
 use OopLogin\Model\Entity\User;
 use PHPUnit\Framework\TestCase;
+use InvalidArgumentException;
 
 class UserTest extends TestCase
 {
@@ -34,24 +35,15 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test constructor.
-     */
-    public function testDefaultConstructor()
+    * Test default constructor
+    */
+    public function testConstructor()
     {
-        /**
-         * Once constructed by default, the User
-         * should have:
-         * - an id
-         * - a username
-         * - an email
-         * - a password
-         */
-
-        $user = new User();
-        $this->assertEquals($user->id(), -1);
-        $this->assertEquals($user->username(), '');
-        $this->assertEquals($user->email(), '');
-        $this->assertEquals($user->password(), '');
+        $this->customUser = new User();
+        $this->assertEquals('', $this->customUser->id());
+        $this->assertEquals('', $this->customUser->username());
+        $this->assertEquals('', $this->customUser->email());
+        $this->assertEquals('', $this->customUser->password());
     }
 
     /**
