@@ -1,9 +1,6 @@
 <?php
 
 namespace OopLogin\Model\Entity;
-
-use InvalidArgumentException;
-
 /**
  * Represents a single user in the database.
  */

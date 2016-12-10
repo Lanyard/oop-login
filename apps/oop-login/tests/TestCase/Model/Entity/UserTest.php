@@ -4,7 +4,6 @@ namespace OopLogin\Test\TestCase\Model;
 
 use OopLogin\Model\Entity\User;
 use PHPUnit\Framework\TestCase;
-use InvalidArgumentException;
 
 class UserTest extends TestCase
 {
