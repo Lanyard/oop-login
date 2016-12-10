@@ -10,33 +10,37 @@ use InvalidArgumentException;
 class User
 {
     /**
-    * The primary id of the user in the database
-    */
+     * The primary id of the user in the database
+     * @var mixed
+     */
     protected $id;
 
     /**
-    * The name of the user
-    */
+     * The name of the user
+     * @var mixed
+     */
     protected $username;
 
     /**
-    * The user's email address
-    */
+     * The user's email address
+     * @var mixed
+     */
     protected $email;
 
     /**
-    * The user's hashed password
-    */
+     * The user's hashed password
+     * @var mixed
+     */
     protected $password;
 
     /**
-    * Constructor
-    *
-    * @param $id The id of the user record
-    * @param $username The name of the user
-    * @param $email The user's email address
-    * @param $password the user's password
-    */
+     * Constructor
+     *
+     * @param mixed $id The id of the user record
+     * @param mixed $username The name of the user
+     * @param mixed $email The user's email address
+     * @param mixed $password the user's password
+     */
     public function __construct($id = '', $username = '', $email = '', $password = '')
     {
         $this->id = $id;
@@ -46,40 +50,40 @@ class User
     }
 
     /**
-    * Get the id of the user record.
-    *
-    * @return int
-    */
+     * Get the id of the user record.
+     *
+     * @return mixed
+     */
     public function id()
     {
         return $this->id;
     }
 
     /**
-    * Get the user's name.
-    *
-    * @return string
-    */
+     * Get the user's name.
+     *
+     * @return mixed
+     */
     public function username()
     {
         return $this->username;
     }
 
     /**
-    * Get the user's email address.
-    *
-    * @return string
-    */
+     * Get the user's email address.
+     *
+     * @return mixed
+     */
     public function email()
     {
         return $this->email;
     }
 
     /**
-    * Get the user's password.
-    *
-    * @return string
-    */
+     * Get the user's password.
+     *
+     * @return mixed
+     */
     public function password()
     {
         return $this->password;
