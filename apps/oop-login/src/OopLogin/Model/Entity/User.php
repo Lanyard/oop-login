@@ -88,4 +88,36 @@ class User
     {
         return $this->password;
     }
+
+    /**
+     * Set the user's id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Set the user's username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * Set the user's email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * Set the user's password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
 }

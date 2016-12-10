@@ -77,4 +77,28 @@ class UserTest extends TestCase
     {
         $this->assertEquals('dfs', $this->customUser->password());
     }
+
+    public function testSetId()
+    {
+        $this->customUser->setId(74);
+        $this->assertEquals(74, $this->customUser->id());
+    }
+
+    public function testSetUsername()
+    {
+        $this->customUser->setUsername('owl');
+        $this->assertEquals('owl', $this->customUser->username());
+    }
+
+    public function testSetEmail()
+    {
+        $this->customUser->setEmail('food@gmail.com');
+        $this->assertEquals('food@gmail.com', $this->customUser->email());
+    }
+
+    public function testSetPassword()
+    {
+        $this->customUser->setPassword('dfsixosnKodp79');
+        $this->assertEquals('dfsixosnKodp79', $this->customUser->password());
+    }
 }
