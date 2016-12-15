@@ -2,6 +2,7 @@
 
 namespace OopLogin\Model\Table;
 
+use OopLogin\Model\Entity\User;
 use PDO;
 use InvalidArgumentException;
 
@@ -42,5 +43,23 @@ class UsersTable
     public function connection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Retrieve an array of Users from the database
+     *
+     * @return User[]
+     */
+    public function read()
+    {
+        $users = array();
+        $stmt = $this->connection->prepare("SELECT * FROM users");
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch()) {
+                $user = new User($row['id'], $row['username'], $row['email'], $row['password']);
+                $users[] = $user;
+            }
+        }
+        return $users;
     }
 }

@@ -80,10 +80,10 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     {
         $users = $this->usersTable->read();
         $user = $users[0];
-        $id = $user->id;
-        $username = $user->username;
-        $email = $user->email;
-        $password = $user->password;
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
 
         $dbId = $this->dbTable->getValue(0, 'id');
         $dbUsername = $this->dbTable->getValue(0, 'username');
