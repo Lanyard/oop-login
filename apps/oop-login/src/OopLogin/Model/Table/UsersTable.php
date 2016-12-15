@@ -35,7 +35,7 @@ class UsersTable
     }
 
     /**
-     * Gets the PDO connection
+     * Get the PDO connection
      *
      * @return PDO
      */
