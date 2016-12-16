@@ -1,17 +1,12 @@
 <?php
 
 namespace OopLogin\Model\Entity;
+
 /**
  * Represents a single user in the database.
  */
 class User
 {
-    /**
-     * The primary id of the user in the database
-     * @var mixed
-     */
-    protected $id;
-
     /**
      * The name of the user
      * @var mixed
@@ -31,6 +26,12 @@ class User
     protected $password;
 
     /**
+     * The primary id of the user in the database
+     * @var mixed
+     */
+    protected $id;
+
+    /**
      * Constructor
      *
      * @param mixed $id The id of the user record
@@ -38,22 +39,12 @@ class User
      * @param mixed $email The user's email address
      * @param mixed $password the user's password
      */
-    public function __construct($id = '', $username = '', $email = '', $password = '')
+    public function __construct($username = '', $email = '', $password = '', $id = '')
     {
-        $this->id = $id;
         $this->username = $username;
         $this->email = $email;
         $this->password = $password;
-    }
-
-    /**
-     * Get the id of the user record.
-     *
-     * @return mixed
-     */
-    public function id()
-    {
-        return $this->id;
+        $this->id = $id;
     }
 
     /**
@@ -87,11 +78,13 @@ class User
     }
 
     /**
-     * Set the user's id
+     * Get the id of the user record.
+     *
+     * @return mixed
      */
-    public function setId($id)
+    public function id()
     {
-        $this->id = $id;
+        return $this->id;
     }
 
     /**
@@ -116,5 +109,13 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    /**
+     * Set the user's id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }

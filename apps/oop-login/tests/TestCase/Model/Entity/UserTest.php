@@ -7,10 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    private $id;
     private $username;
     private $email;
     private $password;
+    private $id;
     private $customUser;
 
     /**
@@ -18,12 +18,12 @@ class UserTest extends TestCase
      */
     public function setUp()
     {
-        $this->id = 1;
         $this->username = 'admin';
         $this->email = 'example@email.com';
         $this->password = 'dfs';
+        $this->id = 1;
 
-        $this->customUser = new User($this->id, $this->username, $this->email, $this->password);
+        $this->customUser = new User($this->username, $this->email, $this->password, $this->id);
     }
 
     /**
