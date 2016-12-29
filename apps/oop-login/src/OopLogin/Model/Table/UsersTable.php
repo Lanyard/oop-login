@@ -46,20 +46,31 @@ class UsersTable
     }
 
     /**
-     * Retrieve an array of Users from the database
+     * Retrieve an array of Users from the table
      *
      * @return User[]
      */
     public function read()
     {
         $users = array();
-        $stmt = $this->connection->prepare("SELECT * FROM users");
+        $stmt = $this->connection->prepare('SELECT * FROM users');
         if ($stmt->execute()) {
             while ($row = $stmt->fetch()) {
-                $user = new User($row['id'], $row['username'], $row['email'], $row['password']);
+                $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
                 $users[] = $user;
             }
         }
         return $users;
+    }
+
+    /**
+     * Add a User to the table
+     *
+     * @param User $user The user to add to the table
+     */
+    public function create($user)
+    {
+        $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+        $stmt->execute(array(':username' => $user->username(), ':email' => $user->email(), ':password' => $user->password()));
     }
 }

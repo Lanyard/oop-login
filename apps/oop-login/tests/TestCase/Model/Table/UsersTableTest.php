@@ -2,12 +2,13 @@
 
 namespace OopLogin\Test\TestCase\Table;
 
-use OopLogin\Model\Table\UsersTable;
-use OopLogin\Model\Entity\User;
-use PHPUnit\Framework\TestCase;
-use PHPUnit_Extensions_Database_TestCase;
 use InvalidArgumentException;
+use OopLogin\Model\Entity\User;
+use OopLogin\Model\Table\UsersTable;
 use PDO;
+use PHPUnit\Framework\TestCase;
+use PHPUnit_Extensions_Database_DataSet_DataSetFilter;
+use PHPUnit_Extensions_Database_TestCase;
 
 class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 {
@@ -44,8 +45,18 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $tableName = 'users';
 
         $this->usersTable = new UsersTable(self::$pdo);
+
         $dataSet = $this->getDataSet();
         $this->dbTable = $dataSet->getTable($tableName);
+
+        $rowCount = $this->dbTable->getRowCount();
+
+        $stmt = self::$pdo->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+
+        for ($i = 0; $i < $rowCount; $i++) {
+            $row = $this->dbTable->getRow($i);
+            $stmt->execute(array(':username' => $row['username'], ':email' => $row['email'], ':password' => $row['password']));
+        }
     }
 
     /**
@@ -53,6 +64,8 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function tearDown()
     {
+        $stmt = self::$pdo->prepare('TRUNCATE users');
+        $stmt->execute();
     }
 
     /**
@@ -74,9 +87,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test reading all users
+     * Test reading one user
      */
-    public function testRead()
+    public function testReadUser()
     {
         $users = $this->usersTable->read();
         $user = $users[0];
@@ -94,5 +107,25 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbUsername, $username);
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Test creating one user
+     */
+    public function testCreateUser()
+    {
+        /**///$this->markTestSkipped('Don\'t want the table messed with right now.');
+        $newUsername = 'robertredford';
+        $newEmail = 'redford@hotmail.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($newUsername, $newEmail, $newPassword);
+        $this->usersTable->create($newUser);
+
+        $fullDataSet = $this->getConnection()->createDataSet(['users']);
+        $dataSet = new PHPUnit_Extensions_Database_DataSet_DataSetFilter($fullDataSet);
+        $dataSet->addIncludeTables(['users']);
+        $dataSet->setIncludeColumnsForTable('users', ['username', 'email', 'password']);
+        $expectedDataSet = $this->createMySQLXMLDataSet('tests/Fixture/oop-login_create-user.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 }
