@@ -2,13 +2,17 @@
 
 namespace OopLogin\Test\TestCase\Table;
 
-use InvalidArgumentException;
+use OopLogin\Exception\DuplicateUsernameException;
+use OopLogin\Exception\DuplicateEmailException;
 use OopLogin\Model\Entity\User;
 use OopLogin\Model\Table\UsersTable;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Extensions_Database_DataSet_DataSetFilter;
 use PHPUnit_Extensions_Database_TestCase;
+use DomainException;
+use InvalidArgumentException;
+use LengthException;
 
 class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 {
@@ -114,7 +118,6 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateUser()
     {
-        /**///$this->markTestSkipped('Don\'t want the table messed with right now.');
         $newUsername = 'robertredford';
         $newEmail = 'redford@hotmail.com';
         $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
@@ -127,5 +130,70 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $dataSet->setIncludeColumnsForTable('users', ['username', 'email', 'password']);
         $expectedDataSet = $this->createMySQLXMLDataSet('tests/Fixture/oop-login_create-user.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+    }
+
+    /**
+     * Test username type
+     */
+    public function testUsernameType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $invalidUsername = 35;
+        $newEmail = 'redford@hotmail.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($invalidUsername, $newEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test username existence
+     */
+    public function testUsernameExistence()
+    {
+        $this->expectException(DomainException::class);
+        $invalidUsername = '';
+        $newEmail = 'redford@hotmail.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($invalidUsername, $newEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test username length
+     */
+    public function testUsernameLength()
+    {
+        $this->expectException(LengthException::class);
+        $invalidUsername = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+        $newEmail = 'redford@hotmail.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($invalidUsername, $newEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test username uniqueness
+     */
+    public function testUsernameUniqueness()
+    {
+        $this->expectException(DuplicateUsernameException::class);
+        $duplicateUsername = 'someuser';
+        $newEmail = 'redford@hotmail.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($duplicateUsername, $newEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test email uniqueness
+     */
+    public function testEmailUniqueness()
+    {
+        $this->expectException(DuplicateEmailException::class);
+        $newUsername = 'somekindofnewuser';
+        $duplicateEmail = 'someuser@domain.com';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($newUsername, $duplicateEmail, $newPassword);
+        $this->usersTable->create($newUser);
     }
 }
