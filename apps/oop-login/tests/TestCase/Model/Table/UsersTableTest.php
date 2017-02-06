@@ -185,12 +185,51 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test email type
+     */
+    public function testEmailType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $newUsername = 'someuser';
+        $invalidEmail = 35;
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($newUsername, $invalidEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test username existence
+     */
+    public function testEmailExistence()
+    {
+        $this->expectException(DomainException::class);
+        $newUsername = 'someotheruser';
+        $invalidEmail = '';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($newUsername, $invalidEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test username length
+     */
+    public function testEmailLength()
+    {
+        $this->expectException(LengthException::class);
+        $newUsername = 'someotheruser';
+        $invalidEmail = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+        $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
+        $newUser = new User($newUsername, $invalidEmail, $newPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
      * Test email uniqueness
      */
     public function testEmailUniqueness()
     {
         $this->expectException(DuplicateEmailException::class);
-        $newUsername = 'somekindofnewuser';
+        $newUsername = 'someotheruser';
         $duplicateEmail = 'someuser@domain.com';
         $newPassword = '$2y$10$LTU3sTI5hVvbNhe5FUfMc.HprIuvrkl7RTIX/8j7uBAYw6nPKLpXu';
         $newUser = new User($newUsername, $duplicateEmail, $newPassword);

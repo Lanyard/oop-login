@@ -84,13 +84,23 @@ class UsersTable
     public function create($user)
     {
         $username = $user->username();
+        $email = $user->email();
         if (!is_string($username)) {
             throw new InvalidArgumentException('The username is not a string');
+        }
+        if (!is_string($email)) {
+            throw new InvalidArgumentException('The email is not a string');
         }
         if (empty($username)) {
             throw new DomainException('The user has no username');
         }
+        if (empty($email)) {
+            throw new DomainException('The user has no email');
+        }
         if (strlen($username) > 255) {
+            throw new LengthException('The username is too long');
+        }
+        if (strlen($email) > 255) {
             throw new LengthException('The username is too long');
         }
         try {
