@@ -40,35 +40,45 @@ class UsersTable
         $this->connection = $connection;
     }
 
+    /**
+     * Validate a User field for a varchar(255) column in the table
+     *
+     * @param string $field The field-value to validate
+     * @param string $name The name of the field for Exception messages
+     *
+     * @throws DomainException
+     * @throws InvalidArgumentException
+     * @throws LengthException
+     *
+     * @return void
+     */
+    protected function validateVarchar255($field, $name)
+    {
+        if(!is_string($field)) {
+            throw new InvalidArgumentException('The ' . $name . ' is not a string');
+        }
+        if (empty($field)) {
+            throw new DomainException('The user has no ' . $name);
+        }
+        if (strlen($field) > 255) {
+            throw new LengthException('The ' . $name . ' is too long');
+        }
+    }
+
+    /**
+     * Validate all needed User fields for the table
+     *
+     * @param string $username the User's username
+     * @param string $email the User's email
+     * @param string $password the User's password
+     *
+     * @return void
+     */
     protected function validateUser($username, $email, $password)
     {
-        if (!is_string($username)) {
-            throw new InvalidArgumentException('The username is not a string');
-        }
-        if (!is_string($email)) {
-            throw new InvalidArgumentException('The email is not a string');
-        }
-        if (!is_string($password)) {
-            throw new InvalidArgumentException('The password is not a string');
-        }
-        if (empty($username)) {
-            throw new DomainException('The user has no username');
-        }
-        if (empty($email)) {
-            throw new DomainException('The user has no email');
-        }
-        if (empty($password)) {
-            throw new DomainException('The user has no password');
-        }
-        if (strlen($username) > 255) {
-            throw new LengthException('The username is too long');
-        }
-        if (strlen($email) > 255) {
-            throw new LengthException('The email is too long');
-        }
-        if (strlen($password) > 255) {
-            throw new LengthException('The password is too long');
-        }
+        $this->validateVarchar255($username, 'username');
+        $this->validateVarchar255($email, 'email');
+        $this->validateVarchar255($password, 'password');
     }
 
     /**
@@ -106,9 +116,6 @@ class UsersTable
      *
      * @throws OopLogin\Exception\DuplicateUsernameException
      * @throws OopLogin\Exception\DuplicateEmailException
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @throws LengthException
      *
      * @return void
      */
