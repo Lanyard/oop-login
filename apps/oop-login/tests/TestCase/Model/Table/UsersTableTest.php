@@ -235,4 +235,43 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $newUser = new User($newUsername, $duplicateEmail, $newPassword);
         $this->usersTable->create($newUser);
     }
+
+    /**
+     * Test password type
+     */
+    public function testPasswordType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $newUsername = 'joandoe';
+        $newEmail = 'joandoe@domain.org';
+        $invalidPassword = 42;
+        $newUser = new User($newUsername, $newEmail, $invalidPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test password existence
+     */
+    public function testPasswordExistence()
+    {
+        $this->expectException(DomainException::class);
+        $newUsername = 'joandoe';
+        $newEmail = 'joandoe@domain.org';
+        $invalidPassword = '';
+        $newUser = new User($newUsername, $newEmail, $invalidPassword);
+        $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test password length
+     */
+    public function testPasswordLength()
+    {
+        $this->expectException(LengthException::class);
+        $newUsername = 'joandoe';
+        $newEmail = 'joandoe@domain.org';
+        $invalidPassword = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+        $newUser = new User($newUsername, $newEmail, $invalidPassword);
+        $this->usersTable->create($newUser);
+    }
 }

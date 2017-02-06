@@ -85,11 +85,15 @@ class UsersTable
     {
         $username = $user->username();
         $email = $user->email();
+        $password = $user->password();
         if (!is_string($username)) {
             throw new InvalidArgumentException('The username is not a string');
         }
         if (!is_string($email)) {
             throw new InvalidArgumentException('The email is not a string');
+        }
+        if (!is_string($password)) {
+            throw new InvalidArgumentException('The password is not a string');
         }
         if (empty($username)) {
             throw new DomainException('The user has no username');
@@ -97,11 +101,17 @@ class UsersTable
         if (empty($email)) {
             throw new DomainException('The user has no email');
         }
+        if (empty($password)) {
+            throw new DomainException('The user has no password');
+        }
         if (strlen($username) > 255) {
             throw new LengthException('The username is too long');
         }
         if (strlen($email) > 255) {
-            throw new LengthException('The username is too long');
+            throw new LengthException('The email is too long');
+        }
+        if (strlen($password) > 255) {
+            throw new LengthException('The password is too long');
         }
         try {
             $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
