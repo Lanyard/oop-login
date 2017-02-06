@@ -40,6 +40,37 @@ class UsersTable
         $this->connection = $connection;
     }
 
+    protected function validateUser($username, $email, $password)
+    {
+        if (!is_string($username)) {
+            throw new InvalidArgumentException('The username is not a string');
+        }
+        if (!is_string($email)) {
+            throw new InvalidArgumentException('The email is not a string');
+        }
+        if (!is_string($password)) {
+            throw new InvalidArgumentException('The password is not a string');
+        }
+        if (empty($username)) {
+            throw new DomainException('The user has no username');
+        }
+        if (empty($email)) {
+            throw new DomainException('The user has no email');
+        }
+        if (empty($password)) {
+            throw new DomainException('The user has no password');
+        }
+        if (strlen($username) > 255) {
+            throw new LengthException('The username is too long');
+        }
+        if (strlen($email) > 255) {
+            throw new LengthException('The email is too long');
+        }
+        if (strlen($password) > 255) {
+            throw new LengthException('The password is too long');
+        }
+    }
+
     /**
      * Get the PDO connection
      *
@@ -86,36 +117,10 @@ class UsersTable
         $username = $user->username();
         $email = $user->email();
         $password = $user->password();
-        if (!is_string($username)) {
-            throw new InvalidArgumentException('The username is not a string');
-        }
-        if (!is_string($email)) {
-            throw new InvalidArgumentException('The email is not a string');
-        }
-        if (!is_string($password)) {
-            throw new InvalidArgumentException('The password is not a string');
-        }
-        if (empty($username)) {
-            throw new DomainException('The user has no username');
-        }
-        if (empty($email)) {
-            throw new DomainException('The user has no email');
-        }
-        if (empty($password)) {
-            throw new DomainException('The user has no password');
-        }
-        if (strlen($username) > 255) {
-            throw new LengthException('The username is too long');
-        }
-        if (strlen($email) > 255) {
-            throw new LengthException('The email is too long');
-        }
-        if (strlen($password) > 255) {
-            throw new LengthException('The password is too long');
-        }
+        $this->validateUser($username, $email, $password);
         try {
             $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
-            $stmt->execute(array(':username' => $user->username(), ':email' => $user->email(), ':password' => $user->password()));
+            $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
         }
         catch(PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
