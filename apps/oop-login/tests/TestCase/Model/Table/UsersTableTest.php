@@ -35,9 +35,29 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     /**
      * Retrieve the needed dataset for testing
      */
-    public function getDataSet()
+    public function getDataSet($set = 'default')
     {
-        return $this->createMySQLXMLDataSet('tests/Fixture/oop-login.xml');
+        if ($set == 'default') {
+            return $this->createMySQLXMLDataSet('tests/Fixture/oop-login.xml');
+        }
+        elseif ($set == 'read-username') {
+            return $this->createMySQLXMLDataSet('tests/Fixture/oop-login_read-user-by-username.xml');;
+        }
+        else return;
+    }
+
+    public function insertDataSet($dataSet, $tableName)
+    {
+        $this->dbTable = $dataSet->getTable($tableName);
+
+        $rowCount = $this->dbTable->getRowCount();
+
+        $stmt = self::$pdo->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+
+        for ($i = 0; $i < $rowCount; $i++) {
+            $row = $this->dbTable->getRow($i);
+            $stmt->execute(array(':username' => $row['username'], ':email' => $row['email'], ':password' => $row['password']));
+        }
     }
 
     /**
@@ -51,16 +71,8 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->usersTable = new UsersTable(self::$pdo);
 
         $dataSet = $this->getDataSet();
-        $this->dbTable = $dataSet->getTable($tableName);
-
-        $rowCount = $this->dbTable->getRowCount();
-
-        $stmt = self::$pdo->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
-
-        for ($i = 0; $i < $rowCount; $i++) {
-            $row = $this->dbTable->getRow($i);
-            $stmt->execute(array(':username' => $row['username'], ':email' => $row['email'], ':password' => $row['password']));
-        }
+        
+        $this->insertDataSet($dataSet, $tableName);
     }
 
     /**
@@ -273,5 +285,29 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $invalidPassword = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
         $newUser = new User($newUsername, $newEmail, $invalidPassword);
         $this->usersTable->create($newUser);
+    }
+
+    /**
+     * Test reading one user by username
+     */
+    public function testReadUserByUsername()
+    {        
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = $this->dbTable->getValue(2, 'id');
+        $dbUsername = $this->dbTable->getValue(2, 'username');
+        $dbEmail = $this->dbTable->getValue(2, 'email');
+        $dbPassword = $this->dbTable->getValue(2, 'password');
+        
+        $user = $this->usersTable->readByUsername($dbUsername);
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+
+        $this->assertEquals($dbId, $id);
+        $this->assertEquals($dbUsername, $username);
+        $this->assertEquals($dbEmail, $email);
+        $this->assertEquals($dbPassword, $password);
     }
 }
