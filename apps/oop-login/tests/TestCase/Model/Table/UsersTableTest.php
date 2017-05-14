@@ -39,11 +39,11 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     {
         if ($set == 'default') {
             return $this->createMySQLXMLDataSet('tests/Fixture/oop-login.xml');
+        } elseif ($set == 'read-username') {
+            return $this->createMySQLXMLDataSet('tests/Fixture/oop-login_read-user-by-username.xml');
+        } else {
+            return;
         }
-        elseif ($set == 'read-username') {
-            return $this->createMySQLXMLDataSet('tests/Fixture/oop-login_read-user-by-username.xml');;
-        }
-        else return;
     }
 
     public function insertDataSet($dataSet, $tableName)
@@ -291,13 +291,13 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      * Test reading one user by username
      */
     public function testReadUserByUsername()
-    {        
+    {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = $this->dbTable->getValue(2, 'id');
-        $dbUsername = $this->dbTable->getValue(2, 'username');
-        $dbEmail = $this->dbTable->getValue(2, 'email');
-        $dbPassword = $this->dbTable->getValue(2, 'password');
+        $dbId = $this->dbTable->getValue(0, 'id');
+        $dbUsername = $this->dbTable->getValue(0, 'username');
+        $dbEmail = $this->dbTable->getValue(0, 'email');
+        $dbPassword = $this->dbTable->getValue(0, 'password');
         
         $user = $this->usersTable->readByUsername($dbUsername);
         $id = $user->id();
@@ -315,7 +315,31 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      *  Test reading one user by email
      */
     public function testReadUserByEmail()
-    {        
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = $this->dbTable->getValue(1, 'id');
+        $dbUsername = $this->dbTable->getValue(1, 'username');
+        $dbEmail = $this->dbTable->getValue(1, 'email');
+        $dbPassword = $this->dbTable->getValue(1, 'password');
+
+        $user = $this->usersTable->readByEmail($dbEmail);
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+
+        $this->assertEquals($dbId, $id);
+        $this->assertEquals($dbUsername, $username);
+        $this->assertEquals($dbEmail, $email);
+        $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     *  Test reading one user by id
+     */
+    public function testReadUserById()
+    {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
         $dbId = $this->dbTable->getValue(2, 'id');
@@ -323,7 +347,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $dbEmail = $this->dbTable->getValue(2, 'email');
         $dbPassword = $this->dbTable->getValue(2, 'password');
         
-        $user = $this->usersTable->readByEmail($dbEmail);
+        $user = $this->usersTable->readById($dbId);
         $id = $user->id();
         $username = $user->username();
         $email = $user->email();

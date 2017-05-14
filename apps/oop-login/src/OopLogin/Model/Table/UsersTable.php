@@ -54,7 +54,7 @@ class UsersTable
      */
     protected function validateVarchar255($field, $name)
     {
-        if(!is_string($field)) {
+        if (!is_string($field)) {
             throw new InvalidArgumentException('The ' . $name . ' is not a string');
         }
         if (empty($field)) {
@@ -111,12 +111,13 @@ class UsersTable
 
     /**
      * Retrieve a User from the table by username
-     * 
+     *
      * @param String $username The username of the user to retrieve
      *
      * @return User
      */
-    public function readByUsername($username) {
+    public function readByUsername($username)
+    {
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
         if ($stmt->execute(array($username))) {
             $row = $stmt->fetch();
@@ -128,14 +129,33 @@ class UsersTable
 
     /**
      * Retrieve a User from the table by email
-     * 
+     *
      * @param String $email The email of the user to retrieve
      *
      * @return User
      */
-    public function readByEmail($username) {
+    public function readByEmail($email)
+    {
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
-        if ($stmt->execute(array($username))) {
+        if ($stmt->execute(array($email))) {
+            $row = $stmt->fetch();
+            $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+            return $user;
+        }
+        return new User();
+    }
+
+    /**
+     * Retrieve a User from the table by id
+     *
+     * @param String $id The id of the user to retrieve
+     *
+     * @return User
+     */
+    public function readById($id)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+        if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
             $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
             return $user;
@@ -162,8 +182,7 @@ class UsersTable
         try {
             $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
             $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
-        }
-        catch(PDOException $e) {
+        } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
                 if (strstr($e->errorInfo[2], 'key \'username\'')) {
                     throw new DuplicateUsernameException('The new username is already in the database');
