@@ -69,15 +69,35 @@ class UsersTable
      * Validate all needed User fields for the table
      *
      * @param string $username the User's username
+     *
+     * @return void
+     */
+    protected function validateUsername($username)
+    {
+        $this->validateVarchar255($username, 'username');
+    }
+
+    /**
+     * Validate all needed User fields for the table
+     *
      * @param string $email the User's email
+     *
+     * @return void
+     */
+    protected function validateEmail($email)
+    {
+        $this->validateVarchar255($email, 'email');
+    }
+
+    /**
+     * Validate all needed User fields for the table
+     *
      * @param string $password the User's password
      *
      * @return void
      */
-    protected function validateUser($username, $email, $password)
+    protected function validatePassword($password)
     {
-        $this->validateVarchar255($username, 'username');
-        $this->validateVarchar255($email, 'email');
         $this->validateVarchar255($password, 'password');
     }
 
@@ -89,6 +109,39 @@ class UsersTable
     public function connection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Add a User to the table
+     *
+     * @param User $user The user to add to the table
+     *
+     * @throws OopLogin\Exception\DuplicateUsernameException
+     * @throws OopLogin\Exception\DuplicateEmailException
+     *
+     * @return void
+     */
+    public function create($user)
+    {
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+        $this->validateUsername($username);
+        $this->validateEmail($email);
+        $this->validatePassword($password);
+        try {
+            $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
+            $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                if (strstr($e->errorInfo[2], 'key \'username\'')) {
+                    throw new DuplicateUsernameException('The new username is already in the database');
+                }
+                if (strstr($e->errorInfo[2], 'key \'email\'')) {
+                    throw new DuplicateEmailException('The new email is already in the database');
+                }
+            }
+        }
     }
 
     /**
@@ -161,36 +214,5 @@ class UsersTable
             return $user;
         }
         return new User();
-    }
-
-    /**
-     * Add a User to the table
-     *
-     * @param User $user The user to add to the table
-     *
-     * @throws OopLogin\Exception\DuplicateUsernameException
-     * @throws OopLogin\Exception\DuplicateEmailException
-     *
-     * @return void
-     */
-    public function create($user)
-    {
-        $username = $user->username();
-        $email = $user->email();
-        $password = $user->password();
-        $this->validateUser($username, $email, $password);
-        try {
-            $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
-            $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
-        } catch (PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                if (strstr($e->errorInfo[2], 'key \'username\'')) {
-                    throw new DuplicateUsernameException('The new username is already in the database');
-                }
-                if (strstr($e->errorInfo[2], 'key \'email\'')) {
-                    throw new DuplicateEmailException('The new email is already in the database');
-                }
-            }
-        }
     }
 }
