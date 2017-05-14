@@ -127,6 +127,23 @@ class UsersTable
     }
 
     /**
+     * Retrieve a User from the table by email
+     * 
+     * @param String $email The email of the user to retrieve
+     *
+     * @return User
+     */
+    public function readByEmail($username) {
+        $stmt = $this->connection->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+        if ($stmt->execute(array($username))) {
+            $row = $stmt->fetch();
+            $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+            return $user;
+        }
+        return new User();
+    }
+
+    /**
      * Add a User to the table
      *
      * @param User $user The user to add to the table

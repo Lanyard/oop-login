@@ -310,4 +310,28 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
     }
+
+    /**
+     *  Test reading one user by email
+     */
+    public function testReadUserByEmail()
+    {        
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = $this->dbTable->getValue(2, 'id');
+        $dbUsername = $this->dbTable->getValue(2, 'username');
+        $dbEmail = $this->dbTable->getValue(2, 'email');
+        $dbPassword = $this->dbTable->getValue(2, 'password');
+        
+        $user = $this->usersTable->readByEmail($dbEmail);
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+
+        $this->assertEquals($dbId, $id);
+        $this->assertEquals($dbUsername, $username);
+        $this->assertEquals($dbEmail, $email);
+        $this->assertEquals($dbPassword, $password);
+    }
 }
