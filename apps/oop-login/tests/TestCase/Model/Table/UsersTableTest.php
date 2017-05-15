@@ -312,7 +312,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     *  Test reading one user by email
+     * Test reading one user by email
      */
     public function testReadUserByEmail()
     {
@@ -336,7 +336,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     *  Test reading one user by id
+     * Test reading one user by id
      */
     public function testReadUserById()
     {
@@ -358,4 +358,36 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
     }
+
+    /**
+     * Test updating one users's username
+     */
+    public function testUpdateUsername()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = $this->dbTable->getValue(2, 'id');
+        $dbUsername = $this->dbTable->getValue(2, 'username');
+        $dbEmail = $this->dbTable->getValue(2, 'email');
+        $dbPassword = $this->dbTable->getValue(2, 'password');
+
+        $newUsername = 'anewmadeupname';
+
+        $this->usersTable->updateUsername($dbId, $newUsername);
+
+        $user = $this->usersTable->readById($dbId);
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+
+        $this->assertEquals($dbId, $id);
+        $this->assertEquals($newUsername, $username);
+        $this->assertEquals($dbEmail, $email);
+        $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Test updating nonexistent id
+     */
 }

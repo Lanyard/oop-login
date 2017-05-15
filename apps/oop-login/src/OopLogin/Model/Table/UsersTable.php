@@ -215,4 +215,18 @@ class UsersTable
         }
         return new User();
     }
+
+    /**
+     * Update a User's username
+     *
+     * @param String $id The id of the user to update
+     *
+     * @return void
+     */
+    public function updateUsername($id, $username)
+    {
+        $this->validateVarchar255($username, 'username');
+        $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
+        $stmt->execute(array(':username' => $username, ':id' => $id));
+    }
 }
