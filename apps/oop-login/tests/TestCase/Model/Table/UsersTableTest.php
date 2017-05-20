@@ -312,6 +312,13 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test reading by too long a username
+     */
+    public function testReadUserByUsernameLength()
+    {
+    }
+
+    /**
      * Test reading one user by email
      */
     public function testReadUserByEmail()
@@ -342,7 +349,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = $this->dbTable->getValue(2, 'id');
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
         $dbUsername = $this->dbTable->getValue(2, 'username');
         $dbEmail = $this->dbTable->getValue(2, 'email');
         $dbPassword = $this->dbTable->getValue(2, 'password');
@@ -360,13 +367,26 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test updating one users's username
+     * Test id type reading user by id
+     */
+    public function testReadUserByIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = 'somekindofid';
+        $user = $this->usersTable->readById($dbId);
+    }
+
+    /**
+     * Test updating one user's username
      */
     public function testUpdateUsername()
     {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = $this->dbTable->getValue(2, 'id');
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
         $dbUsername = $this->dbTable->getValue(2, 'username');
         $dbEmail = $this->dbTable->getValue(2, 'email');
         $dbPassword = $this->dbTable->getValue(2, 'password');
@@ -388,6 +408,16 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test updating nonexistent id
+     * Test id type updating username
      */
+    public function testUpdateUsernameIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 'whatever';
+        $newUsername = 'anewmadeupname';
+
+        $this->usersTable->updateUsername($invalidId, $newUsername);
+    }
 }

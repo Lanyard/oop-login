@@ -66,6 +66,36 @@ class UsersTable
     }
 
     /**
+     * Validate a User field for an int column in the table
+     *
+     * @param int $field The field-value to validate
+     * @param string $name The name of the field for Exception messages
+     *
+     * @throws DomainException
+     * @throws InvalidArgumentException
+     * @throws LengthException
+     *
+     * @return void
+     */
+    protected function validateInt($field, $name)
+    {
+        if (!is_int($field)) {
+            throw new InvalidArgumentException('The ' . $name . ' is not an integer');
+        }
+    }
+
+    /**
+     * Validate User id
+     *
+     * @param int $id the User's id
+     * @return void
+     */
+    protected function validateId($id)
+    {
+        $this->validateInt($id, 'id');
+    }
+
+    /**
      * Validate all needed User fields for the table
      *
      * @param string $username the User's username
@@ -207,6 +237,7 @@ class UsersTable
      */
     public function readById($id)
     {
+        $this->validateInt($id, 'id');
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
@@ -225,7 +256,8 @@ class UsersTable
      */
     public function updateUsername($id, $username)
     {
-        $this->validateVarchar255($username, 'username');
+        $this->validateId($id);
+        $this->validateUsername($username);
         $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
         $stmt->execute(array(':username' => $username, ':id' => $id));
     }
