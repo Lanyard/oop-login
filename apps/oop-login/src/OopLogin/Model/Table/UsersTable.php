@@ -223,6 +223,7 @@ class UsersTable
      */
     public function readByEmail($email)
     {
+        $this->validateEmail($email);
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
         if ($stmt->execute(array($email))) {
             $row = $stmt->fetch();

@@ -378,6 +378,48 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test email type validation while reading by email
+     */
+    public function testReadUserByEmailType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidEmail = 35;
+
+        $user = $this->usersTable->readByEmail($invalidEmail);
+    }
+
+    /**
+     * Test email existence validation while reading by email
+     */
+    public function testReadUserByEmailExistence()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidEmail = '';
+
+        $user = $this->usersTable->readByEmail($invalidEmail);
+    }
+
+    /**
+     * Test email length validation while reding by email
+     */
+    public function testReadUserByEmailLength()
+    {
+        $this->expectException(LengthException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidEmail = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+
+        $user = $this->usersTable->readByEmail($invalidEmail);
+    }
+
+    /**
      * Test reading one user by id
      */
     public function testReadUserById()
