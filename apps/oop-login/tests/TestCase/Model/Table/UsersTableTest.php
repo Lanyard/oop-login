@@ -573,6 +573,17 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test for duplicate username when updting username
+     * Test for duplicate username when updating username
      */
+    public function testUpdateUsernameDuplicate()
+    {
+        $this->expectException(DuplicateUsernameException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $duplicateUsername = $this->dbTable->getValue(1, 'username');
+
+        $this->usersTable->updateUsername($dbId, $duplicateUsername);
+    }
 }

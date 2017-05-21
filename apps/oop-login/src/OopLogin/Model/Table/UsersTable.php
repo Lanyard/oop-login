@@ -264,7 +264,15 @@ class UsersTable
     {
         $this->validateId($id);
         $this->validateUsername($username);
-        $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
-        $stmt->execute(array(':username' => $username, ':id' => $id));
+        try {
+            $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
+            $stmt->execute(array(':username' => $username, ':id' => $id));
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                if (strstr($e->errorInfo[2], 'key \'username\'')) {
+                    throw new DuplicateUsernameException('The new username is already in the database');
+                }
+            }
+        }
     }
 }
