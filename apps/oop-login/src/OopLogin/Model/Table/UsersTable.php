@@ -58,7 +58,7 @@ class UsersTable
             throw new InvalidArgumentException('The ' . $name . ' is not a string');
         }
         if (empty($field)) {
-            throw new DomainException('The user has no ' . $name);
+            throw new DomainException('The ' . $name . ' is empty');
         }
         if (strlen($field) > 255) {
             throw new LengthException('The ' . $name . ' is too long');
@@ -81,6 +81,9 @@ class UsersTable
     {
         if (!is_int($field)) {
             throw new InvalidArgumentException('The ' . $name . ' is not an integer');
+        }
+        if (($field < 0) || ($field > 4294967295)) {
+            throw new DomainException('The ' . $name . ' is outside the valid numerical range');
         }
     }
 
@@ -201,6 +204,7 @@ class UsersTable
      */
     public function readByUsername($username)
     {
+        $this->validateUsername($username);
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
         if ($stmt->execute(array($username))) {
             $row = $stmt->fetch();

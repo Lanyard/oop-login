@@ -312,10 +312,45 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test reading by too long a username
+     * Test username type validation when reading by username
+     */
+    public function testReadUserByUsernameType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidUsername = 35;
+
+        $this->usersTable->readByUsername($invalidUsername);
+    }
+
+    /**
+     * Test username existence validation when reading by username
+     */
+    public function testReadUserByUsernameExistence()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidUsername = '';
+
+        $this->usersTable->readByUsername($invalidUsername);
+    }
+
+    /**
+     * Test username length validation when reading by username
      */
     public function testReadUserByUsernameLength()
     {
+        $this->expectException(LengthException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidUsername = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+
+        $this->usersTable->readByUsername($invalidUsername);
     }
 
     /**
@@ -375,8 +410,21 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = 'somekindofid';
-        $user = $this->usersTable->readById($dbId);
+        $invalidId = 'somekindofid';
+        $user = $this->usersTable->readById($invalidId);
+    }
+
+    /**
+     * Test id value when reading user by id
+     */
+    public function testReadUserByIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = -1;
+        $user = $this->usersTable->readById($invalidId);
     }
 
     /**
