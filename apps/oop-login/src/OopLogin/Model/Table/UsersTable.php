@@ -55,13 +55,13 @@ class UsersTable
     protected function validateVarchar255($field, $name)
     {
         if (!is_string($field)) {
-            throw new InvalidArgumentException('The ' . $name . ' is not a string');
+            throw new InvalidArgumentException('The ' . $name . ' is not a string.');
         }
         if (empty($field)) {
-            throw new DomainException('The ' . $name . ' is empty');
+            throw new DomainException('The ' . $name . ' is empty.');
         }
         if (strlen($field) > 255) {
-            throw new LengthException('The ' . $name . ' is too long');
+            throw new LengthException('The ' . $name . ' is too long.');
         }
     }
 
@@ -80,10 +80,10 @@ class UsersTable
     protected function validateInt($field, $name)
     {
         if (!is_int($field)) {
-            throw new InvalidArgumentException('The ' . $name . ' is not an integer');
+            throw new InvalidArgumentException('The ' . $name . ' is not an integer.');
         }
         if (($field < 0) || ($field > 4294967295)) {
-            throw new DomainException('The ' . $name . ' is outside the valid numerical range');
+            throw new DomainException('The ' . $name . ' is outside the valid numerical range.');
         }
     }
 
@@ -242,7 +242,7 @@ class UsersTable
      */
     public function readById($id)
     {
-        $this->validateInt($id, 'id');
+        $this->validateId($id, 'id');
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
@@ -256,6 +256,7 @@ class UsersTable
      * Update a User's username
      *
      * @param String $id The id of the user to update
+     * @throws LengthException
      *
      * @return void
      */

@@ -510,4 +510,69 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->usersTable->updateUsername($invalidId, $newUsername);
     }
+
+    /**
+     * Test id domain validation when updating username
+     */
+    public function testUpdateUsernameIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = -5;
+        $newUsername = 'anewmadeupname';
+
+        $this->usersTable->updateUsername($invalidId, $newUsername);
+    }
+
+    /**
+     * Test username type validation when updating username
+     */
+    public function testUpdateUsernameType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidUsername = 35;
+
+        $this->usersTable->updateUsername($dbId, $invalidUsername);
+    }
+
+    /**
+     * Test username existence validation when updating username
+     */
+    public function testUpdateUsernameExistence()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidUsername = '';
+
+        $this->usersTable->updateUsername($dbId, $invalidUsername);
+    }
+
+    /**
+     * Test username length validation when updating username
+     */
+
+    public function testUpdateUsernameLength()
+    {
+        $this->expectException(LengthException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidUsername = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYkdNOSokfrUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+
+        $this->usersTable->updateUsername($dbId, $invalidUsername);
+    }
+
+    /**
+     * Test for duplicate username when updting username
+     */
 }
