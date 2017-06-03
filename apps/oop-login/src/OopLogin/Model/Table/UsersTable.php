@@ -91,6 +91,7 @@ class UsersTable
      * Validate User id
      *
      * @param int $id the User's id
+     *
      * @return void
      */
     protected function validateId($id)
@@ -135,6 +136,38 @@ class UsersTable
     }
 
     /**
+     * Check for a duplicate username exception
+     *
+     * @param array $e the exception to handle
+     *
+     * @throws OopLogin\Exception\DuplicateUsernameException
+     *
+     * @return void
+     */
+    protected function checkDuplicateUsername($e)
+    {
+        if (strstr($e->errorInfo[2], 'key \'username\'')) {
+            throw new DuplicateUsernameException('The new username is already in the database');
+        }
+    }
+
+    /**
+     * Check for a duplicate email exception
+     *
+     * @param array $e the exception to handle
+     *
+     * @throws OopLogin\Exception\DuplicateEmailException
+     *
+     * @return void
+     */
+    protected function checkDuplicateEmail($e)
+    {
+        if (strstr($e->errorInfo[2], 'key \'email\'')) {
+            throw new DuplicateEmailException('The new email is already in the database');
+        }
+    }
+
+    /**
      * Get the PDO connection
      *
      * @return PDO
@@ -148,9 +181,6 @@ class UsersTable
      * Add a User to the table
      *
      * @param User $user The user to add to the table
-     *
-     * @throws OopLogin\Exception\DuplicateUsernameException
-     * @throws OopLogin\Exception\DuplicateEmailException
      *
      * @return void
      */
@@ -167,12 +197,8 @@ class UsersTable
             $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                if (strstr($e->errorInfo[2], 'key \'username\'')) {
-                    throw new DuplicateUsernameException('The new username is already in the database');
-                }
-                if (strstr($e->errorInfo[2], 'key \'email\'')) {
-                    throw new DuplicateEmailException('The new email is already in the database');
-                }
+                $this->checkDuplicateUsername($e);
+                $this->checkDuplicateEmail($e);
             }
         }
     }
@@ -269,9 +295,7 @@ class UsersTable
             $stmt->execute(array(':username' => $username, ':id' => $id));
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                if (strstr($e->errorInfo[2], 'key \'username\'')) {
-                    throw new DuplicateUsernameException('The new username is already in the database');
-                }
+                $this->checkDuplicateUsername($e);
             }
         }
     }
