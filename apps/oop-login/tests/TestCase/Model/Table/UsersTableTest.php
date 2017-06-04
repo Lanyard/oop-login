@@ -670,4 +670,94 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->assertEquals($newEmail, $email);
     }
+
+    /**
+     * Test email type validation when updating User's email
+     */
+    public function testUpdateEmailType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidEmail = 123;
+
+        $this->usersTable->updateEmail($dbId, $invalidEmail);
+    }
+
+    /**
+     * Test email existence validation when updating User's email
+     */
+    public function testUpdateEmailExistence()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidEmail = '';
+
+        $this->usersTable->updateEmail($dbId, $invalidEmail);
+    }
+
+    /**
+     * Test email length validation when updating User's email
+     */
+    public function testUpdateEmailLength()
+    {
+        $this->expectException(LengthException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidEmail = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+
+        $this->usersTable->updateEmail($dbId, $invalidEmail);
+    }
+
+    /**
+     * Test duplicate email checking when updating User's email
+     */
+    public function testUpdateEmailDuplicate()
+    {
+        $this->expectException(DuplicateEmailException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $duplicateEmail = $this->dbTable->getValue(1, 'email');
+
+        $this->usersTable->updateEmail($dbId, $duplicateEmail);
+    }
+
+    /**
+     * Test id type validation when updating User's email
+     */
+    public function testUpdateEmailIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = $this->dbTable->getValue(2, 'id');
+        $newEmail = 'whogivesaflyingcircus@gmail.com';
+
+        $this->usersTable->updateEmail($dbId, $newEmail);
+    }
+
+    /**
+     * Test id domain validation when updating email
+     */
+    public function testUpdateEmailIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = -5;
+        $newEmail = 'whogivesaflyingcircus@gmail.com';
+
+        $this->usersTable->updateEmail($invalidId, $newEmail);
+    }
 }

@@ -310,10 +310,13 @@ class UsersTable
      */
     public function updateEmail($id, $email)
     {
+        $this->validateId($id);
+        $this->validateEmail($email);
         try {
             $stmt = $this->connection->prepare('UPDATE users SET EMAIL = :email WHERE id = :id');
             $stmt->execute(array(':email' => $email, ':id' => $id));
         } catch (PDOException $e) {
+            $this->checkDuplicateEmail($e);
         }
     }
 }
