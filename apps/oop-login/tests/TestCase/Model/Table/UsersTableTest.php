@@ -114,7 +114,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $email = $user->email();
         $password = $user->password();
 
-        $dbId = $this->dbTable->getValue(0, 'id');
+        $dbId = (int) $this->dbTable->getValue(0, 'id');
         $dbUsername = $this->dbTable->getValue(0, 'username');
         $dbEmail = $this->dbTable->getValue(0, 'email');
         $dbPassword = $this->dbTable->getValue(0, 'password');
@@ -123,6 +123,18 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbUsername, $username);
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Validate returned id type when reading users
+     */
+    public function testReadUserIdType()
+    {
+        $users = $this->usersTable->read();
+        $user = $users[0];
+        $id = $user->id();
+
+        $this->assertEquals(true, is_int($id));
     }
 
     /**
@@ -294,7 +306,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = $this->dbTable->getValue(0, 'id');
+        $dbId = (int) $this->dbTable->getValue(0, 'id');
         $dbUsername = $this->dbTable->getValue(0, 'username');
         $dbEmail = $this->dbTable->getValue(0, 'email');
         $dbPassword = $this->dbTable->getValue(0, 'password');
@@ -309,6 +321,24 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbUsername, $username);
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Test returned id type when reading user by username
+     */
+    public function testReadUserByUsernameIdType()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(0, 'id');
+        $dbUsername = $this->dbTable->getValue(0, 'username');
+        $dbEmail = $this->dbTable->getValue(0, 'email');
+        $dbPassword = $this->dbTable->getValue(0, 'password');
+        
+        $user = $this->usersTable->readByUsername($dbUsername);
+        $id = $user->id();
+
+        $this->assertEquals(true, is_int($id));
     }
 
     /**
@@ -360,7 +390,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     {
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
-        $dbId = $this->dbTable->getValue(1, 'id');
+        $dbId = (int) $this->dbTable->getValue(1, 'id');
         $dbUsername = $this->dbTable->getValue(1, 'username');
         $dbEmail = $this->dbTable->getValue(1, 'email');
         $dbPassword = $this->dbTable->getValue(1, 'password');
@@ -375,6 +405,24 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbUsername, $username);
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Test returned id type when reading user by email
+     */
+    public function testReadUserByEmailIdType()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(1, 'id');
+        $dbUsername = $this->dbTable->getValue(1, 'username');
+        $dbEmail = $this->dbTable->getValue(1, 'email');
+        $dbPassword = $this->dbTable->getValue(1, 'password');
+
+        $user = $this->usersTable->readByEmail($dbEmail);
+        $id = $user->id();
+
+        $this->assertEquals(true, is_int($id));
     }
 
     /**
@@ -441,6 +489,24 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->assertEquals($dbUsername, $username);
         $this->assertEquals($dbEmail, $email);
         $this->assertEquals($dbPassword, $password);
+    }
+
+    /**
+     * Test returned id type when reading one user by id
+     */
+    public function testReadUserByIdIdType()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $dbUsername = $this->dbTable->getValue(2, 'username');
+        $dbEmail = $this->dbTable->getValue(2, 'email');
+        $dbPassword = $this->dbTable->getValue(2, 'password');
+        
+        $user = $this->usersTable->readById($dbId);
+        $id = $user->id();
+
+        $this->assertEquals(true, is_int($id));
     }
 
     /**
@@ -585,5 +651,23 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $duplicateUsername = $this->dbTable->getValue(1, 'username');
 
         $this->usersTable->updateUsername($dbId, $duplicateUsername);
+    }
+
+    /**
+     * Test updating User's email
+     */
+    public function testUpdateEmail()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $newEmail = 'whogivesaflyingcircus@gmail.com';
+
+        $this->usersTable->updateEmail($dbId, $newEmail);
+
+        $user = $this->usersTable->readById($dbId);
+        $email = $user->email();
+
+        $this->assertEquals($newEmail, $email);
     }
 }

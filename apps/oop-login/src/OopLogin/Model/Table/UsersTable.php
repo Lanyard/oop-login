@@ -214,7 +214,7 @@ class UsersTable
         $stmt = $this->connection->prepare('SELECT * FROM users');
         if ($stmt->execute()) {
             while ($row = $stmt->fetch()) {
-                $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+                $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
                 $users[] = $user;
             }
         }
@@ -234,7 +234,7 @@ class UsersTable
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
         if ($stmt->execute(array($username))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
             return $user;
         }
         return new User();
@@ -253,7 +253,7 @@ class UsersTable
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
         if ($stmt->execute(array($email))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
             return $user;
         }
         return new User();
@@ -272,7 +272,7 @@ class UsersTable
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], $row['id']);
+            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
             return $user;
         }
         return new User();
@@ -297,6 +297,23 @@ class UsersTable
             if ($e->errorInfo[1] == 1062) {
                 $this->checkDuplicateUsername($e);
             }
+        }
+    }
+
+    /**
+     * Update a User's email
+     *
+     * @param String $id The id of the user to update
+     * @throws LengthException
+     *
+     * @return void
+     */
+    public function updateEmail($id, $email)
+    {
+        try {
+            $stmt = $this->connection->prepare('UPDATE users SET EMAIL = :email WHERE id = :id');
+            $stmt->execute(array(':email' => $email, ':id' => $id));
+        } catch (PDOException $e) {
         }
     }
 }
