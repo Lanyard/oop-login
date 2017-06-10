@@ -760,4 +760,99 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->usersTable->updateEmail($invalidId, $newEmail);
     }
+
+    /**
+     * Test updating User's password
+     */
+    public function testUpdatePassword()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $newPassword = '$2y$10$Dm9oI/pqrr1706eOPcehLeTnWZ8f0iJVR02WEPsGr8N5muXUrBkRK';
+
+        $this->usersTable->updatePassword($dbId, $newPassword);
+
+        $user = $this->usersTable->readById($dbId);
+
+        $password = $user->password();
+
+        $this->assertEquals($newPassword, $password);
+    }
+
+    /**
+     * Test password type validation when updating password
+     */
+    public function testUpdatePasswordType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidPassword = 25;
+
+        $this->usersTable->updatePassword($dbId, $invalidPassword);
+    }
+
+    /**
+     * Test password existence validation when updating password
+     */
+    public function testUpdatePasswordExistence()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidPassword = '';
+
+        $this->usersTable->updatePassword($dbId, $invalidPassword);
+    }
+
+    /**
+     * Test password length validation when updating password
+     */
+    public function testUpdatePasswordLength()
+    {
+        $this->expectException(LengthException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $invalidPassword = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYkdNOSokfrUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
+
+        $this->usersTable->updatePassword($dbId, $invalidPassword);
+    }
+
+    /**
+     * Test id domain validation when updating password
+     */
+    public function testUpdatePasswordIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = -1;
+        $password = '$2y$10$Dm9oI/pqrr1706eOPcehLeTnWZ8f0iJVR02WEPsGr8N5muXUrBkRK';
+
+        $this->usersTable->updatePassword($invalidId, $password);
+    }
+
+    /**
+     * Test id type validation when updating password
+     */
+    public function testUpdatePasswordIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 'id';
+        $password = '$2y$10$Dm9oI/pqrr1706eOPcehLeTnWZ8f0iJVR02WEPsGr8N5muXUrBkRK';
+
+        $this->usersTable->updatePassword($invalidId, $password);
+    }
 }

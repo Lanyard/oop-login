@@ -262,7 +262,7 @@ class UsersTable
     /**
      * Retrieve a User from the table by id
      *
-     * @param String $id The id of the user to retrieve
+     * @param int $id The id of the user to retrieve
      *
      * @return User
      */
@@ -281,8 +281,7 @@ class UsersTable
     /**
      * Update a User's username
      *
-     * @param String $id The id of the user to update
-     * @throws LengthException
+     * @param int $id The id of the user to update
      *
      * @return void
      */
@@ -303,8 +302,7 @@ class UsersTable
     /**
      * Update a User's email
      *
-     * @param String $id The id of the user to update
-     * @throws LengthException
+     * @param int $id The id of the user to update
      *
      * @return void
      */
@@ -313,10 +311,25 @@ class UsersTable
         $this->validateId($id);
         $this->validateEmail($email);
         try {
-            $stmt = $this->connection->prepare('UPDATE users SET EMAIL = :email WHERE id = :id');
+            $stmt = $this->connection->prepare('UPDATE users SET email = :email WHERE id = :id');
             $stmt->execute(array(':email' => $email, ':id' => $id));
         } catch (PDOException $e) {
             $this->checkDuplicateEmail($e);
         }
+    }
+
+    /**
+     * Update a User's password
+     *
+     * @param int $id The id of the User to update
+     *
+     * @return void
+     */
+    public function updatePassword($id, $password)
+    {
+        $this->validateId($id);
+        $this->validatePassword($password);
+        $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
+        $stmt->execute(array(':password' => $password, ':id' => $id));
     }
 }
