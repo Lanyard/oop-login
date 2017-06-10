@@ -332,4 +332,18 @@ class UsersTable
         $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
         $stmt->execute(array(':password' => $password, ':id' => $id));
     }
+
+    /**
+     * Delete a User
+     *
+     * @param int $id The id of the User to delete
+     *
+     * @return void
+     */
+    public function delete($id)
+    {
+        $this->validateId($id);
+        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
+        $stmt->execute(array(':id' => $id));
+    }
 }

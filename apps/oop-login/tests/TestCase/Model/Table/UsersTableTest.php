@@ -855,4 +855,59 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->usersTable->updatePassword($invalidId, $password);
     }
+
+    /**
+     * Test deleting a User
+     */
+    public function testDeleteUser()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $dbId = (int) $this->dbTable->getValue(2, 'id');
+        $dbUsername = $this->dbTable->getValue(2, 'username');
+        $dbEmail = $this->dbTable->getValue(2, 'email');
+        $dbPassword = $this->dbTable->getValue(2, 'password');
+
+        $this->usersTable->delete($dbId);
+
+        $user = $this->usersTable->readById($dbId);
+
+        $id = $user->id();
+        $username = $user->username();
+        $email = $user->email();
+        $password = $user->password();
+
+        $this->assertEquals(null, $id);
+        $this->assertEquals(null, $username);
+        $this->assertEquals(null, $email);
+        $this->assertEquals(null, $password);
+    }
+
+    /**
+     * Test id value validation when deleting a User
+     */
+    public function testDeleteUserIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = -1;
+
+        $this->usersTable->delete($invalidId);
+    }
+
+    /**
+     * Test id type validation when deleting a User
+     */
+    public function testDeleteUserIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 'password';
+
+        $this->usersTable->delete($invalidId);
+    }
 }
