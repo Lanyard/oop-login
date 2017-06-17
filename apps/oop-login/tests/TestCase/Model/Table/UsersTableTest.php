@@ -4,6 +4,7 @@ namespace OopLogin\Test\TestCase\Table;
 
 use OopLogin\Exception\DuplicateUsernameException;
 use OopLogin\Exception\DuplicateEmailException;
+use OopLogin\Exception\NotFoundException;
 use OopLogin\Model\Entity\User;
 use OopLogin\Model\Table\UsersTable;
 use PDO;
@@ -593,6 +594,21 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test id existence in db when updating username
+     */
+    public function testUpdateUsernameIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 459;
+        $newUsername = 'anewmadeupname';
+
+        $this->usersTable->updateUsername($invalidId, $newUsername);
+    }
+
+    /**
      * Test username type validation when updating username
      */
     public function testUpdateUsernameType()
@@ -762,6 +778,21 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test id existence when updating email
+     */
+    public function testUpdateEmailIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 349;
+        $newEmail = 'whogivesaflyingcircus@gmail.com';
+
+        $this->usersTable->updateEmail($invalidId, $newEmail);
+    }
+
+    /**
      * Test updating User's password
      */
     public function testUpdatePassword()
@@ -857,6 +888,21 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test id existence when updating password
+     */
+    public function testUpdatePasswordIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 293;
+        $password = '$2y$10$Dm9oI/pqrr1706eOPcehLeTnWZ8f0iJVR02WEPsGr8N5muXUrBkRK';
+
+        $this->usersTable->updatePassword($invalidId, $password);
+    }
+
+    /**
      * Test deleting a User
      */
     public function testDeleteUser()
@@ -910,4 +956,19 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->usersTable->delete($invalidId);
     }
+
+    /**
+     * Test id existence when deleting a User
+     */
+    public function testDeleteUserIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $invalidId = 293;
+
+        $this->usersTable->delete($invalidId);
+    }
+
 }

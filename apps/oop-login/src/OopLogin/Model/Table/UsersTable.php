@@ -4,6 +4,7 @@ namespace OopLogin\Model\Table;
 
 use OopLogin\Exception\DuplicateUsernameException;
 use OopLogin\Exception\DuplicateEmailException;
+use OopLogin\Exception\NotFoundException;
 use OopLogin\Model\Entity\User;
 use PDO;
 use DomainException;
@@ -282,6 +283,7 @@ class UsersTable
      * Update a User's username
      *
      * @param int $id The id of the user to update
+     * @throws OopLogin\Exception\NotFoundException
      *
      * @return void
      */
@@ -289,6 +291,10 @@ class UsersTable
     {
         $this->validateId($id);
         $this->validateUsername($username);
+        $user = $this->readById($id);
+        if ($user->id() == null) {
+            throw new NotFoundException('No user with the given id was found.');
+        }
         try {
             $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
             $stmt->execute(array(':username' => $username, ':id' => $id));
@@ -303,6 +309,7 @@ class UsersTable
      * Update a User's email
      *
      * @param int $id The id of the user to update
+     * @throws OopLogin\Exception\NotFoundException
      *
      * @return void
      */
@@ -310,6 +317,10 @@ class UsersTable
     {
         $this->validateId($id);
         $this->validateEmail($email);
+        $user = $this->readById($id);
+        if ($user->id() == null) {
+            throw new NotFoundException('No user with the given id was found.');
+        }
         try {
             $stmt = $this->connection->prepare('UPDATE users SET email = :email WHERE id = :id');
             $stmt->execute(array(':email' => $email, ':id' => $id));
@@ -329,6 +340,10 @@ class UsersTable
     {
         $this->validateId($id);
         $this->validatePassword($password);
+        $user = $this->readById($id);
+        if ($user->id() == null) {
+            throw new NotFoundException('No user with the given id was found.');
+        }
         $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
         $stmt->execute(array(':password' => $password, ':id' => $id));
     }
@@ -343,6 +358,10 @@ class UsersTable
     public function delete($id)
     {
         $this->validateId($id);
+        $user = $this->readById($id);
+        if ($user->id() == null) {
+            throw new NotFoundException('No user with the given id was found.');
+        }
         $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
         $stmt->execute(array(':id' => $id));
     }
