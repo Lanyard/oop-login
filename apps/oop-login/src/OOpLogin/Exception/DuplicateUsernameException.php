@@ -1,6 +1,6 @@
 <?php
 namespace OopLogin\Exception;
 
-class DuplicateUsernameException extends \DomainException
+class DuplicateUsernameException extends DuplicateException
 {
 }
