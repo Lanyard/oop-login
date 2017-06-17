@@ -170,9 +170,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test username existence
+     * Test username emptiness
      */
-    public function testUsernameExistence()
+    public function testUsernameEmpty()
     {
         $this->expectException(DomainException::class);
         $invalidUsername = '';
@@ -222,9 +222,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test username existence
+     * Test username emptiness
      */
-    public function testEmailExistence()
+    public function testEmailEmpty()
     {
         $this->expectException(DomainException::class);
         $newUsername = 'someotheruser';
@@ -274,9 +274,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test password existence
+     * Test password emptiness
      */
-    public function testPasswordExistence()
+    public function testPasswordEmpty()
     {
         $this->expectException(DomainException::class);
         $newUsername = 'joandoe';
@@ -356,9 +356,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test username existence validation when reading by username
+     * Test username emptiness validation when reading by username
      */
-    public function testReadUserByUsernameExistence()
+    public function testReadUserByUsernameEmpty()
     {
         $this->expectException(DomainException::class);
 
@@ -440,9 +440,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test email existence validation while reading by email
+     * Test email emptiness validation while reading by email
      */
-    public function testReadUserByEmailExistence()
+    public function testReadUserByEmailEmpty()
     {
         $this->expectException(DomainException::class);
 
@@ -608,9 +608,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test username existence validation when updating username
+     * Test username emptiness validation when updating username
      */
-    public function testUpdateUsernameExistence()
+    public function testUpdateUsernameEmpty()
     {
         $this->expectException(DomainException::class);
 
@@ -687,9 +687,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test email existence validation when updating User's email
+     * Test email emptiness validation when updating User's email
      */
-    public function testUpdateEmailExistence()
+    public function testUpdateEmailEmpty()
     {
         $this->expectException(DomainException::class);
 
@@ -796,9 +796,9 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test password existence validation when updating password
+     * Test password emptiness validation when updating password
      */
-    public function testUpdatePasswordExistence()
+    public function testUpdatePasswordEmpty()
     {
         $this->expectException(DomainException::class);
 
