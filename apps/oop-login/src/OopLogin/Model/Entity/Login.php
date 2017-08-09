@@ -5,28 +5,22 @@ namespace OopLogin\Model\Entity;
 /**
  * Represents a single user in the database.
  */
-class User
+class Login
 {
     /**
-     * The name of the user
+     * The id of the user logging in
      * @var mixed
      */
-    protected $username;
+    protected $userId;
 
     /**
-     * The user's email address
+     * The time of the login
      * @var mixed
      */
-    protected $email;
+    protected $time;
 
     /**
-     * The user's hashed password
-     * @var mixed
-     */
-    protected $password;
-
-    /**
-     * The primary id of the user in the database
+     * The primary id of the login in the database
      * @var mixed
      */
     protected $id;
