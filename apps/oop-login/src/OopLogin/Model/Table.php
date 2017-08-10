@@ -6,6 +6,7 @@ use OopLogin\Exception\DuplicateUsernameException;
 use OopLogin\Exception\DuplicateEmailException;
 use OopLogin\Exception\NotFoundException;
 use OopLogin\Model\Entity\Login;
+use DateTime;
 use PDO;
 use DomainException;
 use InvalidArgumentException;
@@ -85,6 +86,15 @@ class Table
         }
         if (($field < 0) || ($field > 4294967295)) {
             throw new DomainException('The ' . $name . ' is outside the valid numerical range.');
+        }
+    }
+
+    protected function validateDatetime($field, $name)
+    {
+        $format = 'Y-m-d H:i:s';
+        $t = DateTime::createFromFormat($format, $field);
+        if (!$t || ($t->format($format) !== $field)) {
+            throw new InvalidArgumentException('The ' . $name . ' is not a datetime value.');
         }
     }
 

@@ -32,6 +32,8 @@ class LoginsTable extends Table
 
         $this->validateInt($userId, 'user id');
 
+        $this->validateDatetime($time, 'time');
+
         try {
             $stmt = $this->connection->prepare('INSERT INTO logins (user_id, time) VALUES (:user_id, :time)');
             $stmt->execute(array(':user_id' => $userId, ':time' => $time));

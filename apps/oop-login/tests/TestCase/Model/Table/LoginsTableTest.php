@@ -160,11 +160,11 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
     public function testCreateLoginUserIdType()
     {
         $this->expectException(InvalidArgumentException::class);
-        
+
         $invalidUserId = 'sorry';
         $newTime = '2015-03-12 04:32:14';
         $newLogin = new Login($invalidUserId, $newTime);
-        
+
         $this->loginsTable->create($newLogin);
     }
 
@@ -179,6 +179,20 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         $newTime = '2015-03-12 04:32:14';
         $invalidLogin = new Login($invalidUserId, $newTime);
 
+        $this->loginsTable->create($invalidLogin);
+    }
+
+    /**
+     * Test time type when creating login
+     */
+    public function testCreateLoginTimeType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        
+        $newUserId = 3;
+        $invalidTime = 'oaviom';
+        $invalidLogin = new Login($newUserId, $invalidTime);
+        
         $this->loginsTable->create($invalidLogin);
     }
 }
