@@ -134,4 +134,51 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $this->assertEquals(true, is_int($id));
     }
+
+    /**
+     * Test creating one login
+     */
+    public function testCreateLogin()
+    {
+        $newUserId = 8;
+        $newTime = '2017-10-28 07:43:08';
+        $newLogin = new Login($newUserId, $newTime);
+        $this->loginsTable->create($newLogin);
+
+        $fullDataSet = $this->getConnection()->createDataSet(['logins']);
+        $dataSet = new PHPUnit_Extensions_Database_DataSet_DataSetFilter($fullDataSet);
+        $dataSet->addIncludeTables(['logins']);
+        $dataSet->setIncludeColumnsForTable('logins', ['id', 'user_id', 'time']);
+        $expectedDataSet = $this->createMySQLXMLDataSet('tests/Fixture/oop-login_create-login.xml');
+        
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+    }
+
+    /**
+     * Test user id type when creating login
+     */
+    public function testCreateLoginUserIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        
+        $invalidUserId = 'sorry';
+        $newTime = '2015-03-12 04:32:14';
+        $newLogin = new Login($invalidUserId, $newTime);
+        
+        $this->loginsTable->create($newLogin);
+    }
+
+    /**
+     * Test user id value when creating login
+     */
+    public function testCreateLoginUserIdValue()
+    {
+        $this->expectException(DomainException::class);
+        
+        $invalidUserId = -1;
+        $newTime = '2015-03-12 04:32:14';
+        $invalidLogin = new Login($invalidUserId, $newTime);
+
+        $this->loginsTable->create($invalidLogin);
+    }
 }

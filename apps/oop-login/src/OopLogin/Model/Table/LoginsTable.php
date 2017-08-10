@@ -185,22 +185,17 @@ class LoginsTable
      *
      * @return void
      */
-    public function create($user)
+    public function create($login)
     {
-        $username = $user->username();
-        $email = $user->email();
-        $password = $user->password();
-        $this->validateUsername($username);
-        $this->validateEmail($email);
-        $this->validatePassword($password);
+        $userId = $login->userId();
+        $time = $login->time();
+
+        $this->validateInt($userId, 'user id');
+
         try {
-            $stmt = $this->connection->prepare('INSERT INTO users (username, email, password) VALUES (:username, :email, :password)');
-            $stmt->execute(array(':username' => $username, ':email' => $email, ':password' => $password));
+            $stmt = $this->connection->prepare('INSERT INTO logins (user_id, time) VALUES (:user_id, :time)');
+            $stmt->execute(array(':user_id' => $userId, ':time' => $time));
         } catch (PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                $this->checkDuplicateUsername($e);
-                $this->checkDuplicateEmail($e);
-            }
         }
     }
 
