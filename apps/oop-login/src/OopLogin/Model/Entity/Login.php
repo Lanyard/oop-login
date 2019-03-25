@@ -32,7 +32,7 @@ class Login
      * @param mixed $time The time of the login
      * @param mixed $id The id of the login record
      */
-    public function __construct($userId = '', $time = '', $id = '')
+    public function __construct($userId = null, $time = null, $id = null)
     {
         $this->userId = $userId;
         $this->time = $time;

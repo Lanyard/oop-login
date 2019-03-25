@@ -72,8 +72,10 @@ class LoginsTable extends Table
         $stmt = $this->connection->prepare('SELECT * FROM logins WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
-            $login = new Login((int) $row['user_id'], $row['time'], (int) $row['id']);
-            return $login;
+            if ($row) {
+                $login = new Login((int) $row['user_id'], $row['time'], (int) $row['id']);
+                return $login;
+            }
         }
         return new Login();
     }
@@ -107,6 +109,10 @@ class LoginsTable extends Table
      */
     public function delete($id)
     {
+        $login = $this->readById($id);
+        $stmt = $this->connection->prepare('DELETE FROM logins WHERE id = :id');
+        $stmt->execute(array(':id' => $id));
+        /*
         $this->validateId($id);
         $user = $this->readById($id);
         if ($user->id() == null) {
@@ -114,5 +120,6 @@ class LoginsTable extends Table
         }
         $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
         $stmt->execute(array(':id' => $id));
+        */
     }
 }
