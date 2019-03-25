@@ -84,7 +84,16 @@ class Table
         if (!is_int($field)) {
             throw new InvalidArgumentException('The ' . $name . ' is not an integer.');
         }
-        if (($field < 0) || ($field > 4294967295)) {
+        if ($field > 4294967295) {
+            throw new DomainException('The ' . $name . ' is outside the valid numerical range.');
+        }
+    }
+
+    protected function validateNonNegInt($field, $name)
+    {
+        $this->validateInt($field, $name);
+
+        if ($field < 0) {
             throw new DomainException('The ' . $name . ' is outside the valid numerical range.');
         }
     }
@@ -105,9 +114,9 @@ class Table
      *
      * @return void
      */
-    protected function validateId($id)
+    protected function validateId($field, $name = 'id')
     {
-        $this->validateInt($id, 'id');
+        $this->validateNonNegInt($field, $name);
     }
 
     /**
