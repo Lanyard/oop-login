@@ -19,9 +19,9 @@ use PDOException;
 class LoginsTable extends Table
 {
     /**
-     * Add a User to the table
+     * Add a Login to the table
      *
-     * @param User $user The user to add to the table
+     * @param Login $login The login to add to the table
      *
      * @return void
      */
@@ -42,9 +42,9 @@ class LoginsTable extends Table
     }
 
     /**
-     * Retrieve an array of Users from the table
+     * Retrieve an array of Logins from the table
      *
-     * @return User[]
+     * @return Login[]
      */
     public function read()
     {
@@ -60,49 +60,11 @@ class LoginsTable extends Table
     }
 
     /**
-     * Retrieve a User from the table by username
+     * Retrieve a Login from the table by id
      *
-     * @param String $username The username of the user to retrieve
+     * @param int $id The id of the login to retrieve
      *
-     * @return User
-     */
-    public function readByUsername($username)
-    {
-        $this->validateUsername($username);
-        $stmt = $this->connection->prepare('SELECT * FROM logins WHERE username = ? LIMIT 1');
-        if ($stmt->execute(array($username))) {
-            $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], /*(int)*/ $row['id']);
-            return $user;
-        }
-        return new User();
-    }
-
-    /**
-     * Retrieve a User from the table by email
-     *
-     * @param String $email The email of the user to retrieve
-     *
-     * @return User
-     */
-    public function readByEmail($email)
-    {
-        $this->validateEmail($email);
-        $stmt = $this->connection->prepare('SELECT * FROM logins WHERE email = ? LIMIT 1');
-        if ($stmt->execute(array($email))) {
-            $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], /*(int)*/ $row['id']);
-            return $user;
-        }
-        return new User();
-    }
-
-    /**
-     * Retrieve a User from the table by id
-     *
-     * @param int $id The id of the user to retrieve
-     *
-     * @return User
+     * @return Login
      */
     public function readById($id)
     {
@@ -117,7 +79,7 @@ class LoginsTable extends Table
     }
 
     /**
-     * Retrieve a Login from the table by user id
+     * Retrieve Logins from the table by user id
      *
      * @param int $userId the id of the user to retrieve logins of
      *
@@ -134,75 +96,6 @@ class LoginsTable extends Table
             }
         }
         return $logins;
-    }
-
-    /**
-     * Update a User's username
-     *
-     * @param int $id The id of the user to update
-     * @throws OopLogin\Exception\NotFoundException
-     *
-     * @return void
-     */
-    public function updateUsername($id, $username)
-    {
-        $this->validateId($id);
-        $this->validateUsername($username);
-        $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
-        try {
-            $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
-            $stmt->execute(array(':username' => $username, ':id' => $id));
-        } catch (PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                $this->checkDuplicateUsername($e);
-            }
-        }
-    }
-
-    /**
-     * Update a User's email
-     *
-     * @param int $id The id of the user to update
-     * @throws OopLogin\Exception\NotFoundException
-     *
-     * @return void
-     */
-    public function updateEmail($id, $email)
-    {
-        $this->validateId($id);
-        $this->validateEmail($email);
-        $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
-        try {
-            $stmt = $this->connection->prepare('UPDATE users SET email = :email WHERE id = :id');
-            $stmt->execute(array(':email' => $email, ':id' => $id));
-        } catch (PDOException $e) {
-            $this->checkDuplicateEmail($e);
-        }
-    }
-
-    /**
-     * Update a User's password
-     *
-     * @param int $id The id of the User to update
-     *
-     * @return void
-     */
-    public function updatePassword($id, $password)
-    {
-        $this->validateId($id);
-        $this->validatePassword($password);
-        $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
-        $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
-        $stmt->execute(array(':password' => $password, ':id' => $id));
     }
 
     /**
