@@ -90,7 +90,7 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testConnection()
     {
-        $this->assertEquals(self::$pdo, $this->loginsTable->connection());
+        $this->assertSame(self::$pdo, $this->loginsTable->connection());
     }
 
     /**
@@ -118,9 +118,9 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         $dbUserId = (int) $this->dbTable->getValue(0, 'user_id');
         $dbTime = $this->dbTable->getValue(0, 'time');
 
-        $this->assertEquals($dbId, $id);
-        $this->assertEquals($dbUserId, $userId);
-        $this->assertEquals($dbTime, $time);
+        $this->assertSame($dbId, $id);
+        $this->assertSame($dbUserId, $userId);
+        $this->assertSame($dbTime, $time);
     }
 
     /**
@@ -131,8 +131,10 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         $logins = $this->loginsTable->read();
         $login = $logins[0];
         $id = $login->id();
+        $userId = $login->userId();
 
-        $this->assertEquals(true, is_int($id));
+        $this->assertSame(true, is_int($id));
+        $this->assertSame(true, is_int($userId));
     }
 
     /**
@@ -195,4 +197,103 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         
         $this->loginsTable->create($invalidLogin);
     }
+
+    /**
+     * Test retrieving logins by user id
+     */
+    public function testReadLoginsByUserId()
+    {
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $db[0]['userId'] = (int) $this->dbTable->getValue(0, 'user_id');
+        $db[0]['time'] = $this->dbTable->getValue(0, 'time');
+        $db[0]['id'] = (int) $this->dbTable->getValue(0, 'id');
+
+        $db[1]['userId'] = (int) $this->dbTable->getValue(2, 'user_id');
+        $db[1]['time'] = $this->dbTable->getValue(2, 'time');
+        $db[1]['id'] = (int) $this->dbTable->getValue(2, 'id');
+        
+        $logins = $this->loginsTable->readByUserId($db[0]['userId']);
+
+        $this->assertSame(count($db), count($logins));
+
+        for ($i = 0; $i < count($db); $i++) {
+            $userId = $logins[$i]->userId();
+            $time = $logins[$i]->time();
+            $id = $logins[$i]->id();
+
+            $this->assertSame($db[$i]['userId'], $userId);
+            $this->assertSame($db[$i]['time'], $time);
+            $this->assertSame($db[$i]['id'], $id);
+        }
+    }
+
+    /**
+     * Test user id type validation when reading by user id
+     */
+    public function testReadLoginsByUserIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $invalidUserId = 'viwoj';
+
+        $logins = $this->loginsTable->readByUserId($invalidUserId);
+    }
+
+    /**
+     * Test user id value when reading by user id
+     */
+    public function testReadLoginsByUserIdValue()
+    {
+        $this->expectException(DomainException::class);
+        
+        $invalidUserId = -1;
+
+        $logins = $this->loginsTable->readByUserId($invalidUserId);
+    }
+
+    /**
+     * Test retrieving login by login id
+     */
+    public function testReadLoginById()
+    {
+        $dbId = (int) $this->dbTable->getValue(0, 'user_id');
+        $dbTime = $this->dbTable->getValue(0, 'time');
+        $dbUserId = (int) $this->dbTable->getValue(0, 'id');
+
+        $login = $this->loginsTable->readById($dbId);
+
+        $userId = $login->userId();
+        $time = $login->time();
+        $id = $login->id();
+
+        $this->assertSame($dbUserId, $userId);
+        $this->assertSame($dbTime, $time);
+        $this->assertSame($dbId, $id);
+    }
+
+    /**
+     * Test login id type validation when reading by login id
+     */
+    public function testReadLoginByIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $invalidId = 'woiwp';
+
+        $logins = $this->loginsTable->readById($invalidId);
+    }
+
+    /**
+     * Test login id value validation when reading by login id
+     */
+    public function testReadLoginByIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $invalidId = -1;
+
+        $logins = $this->loginsTable->readById($invalidId);
+    }
+
 }

@@ -30,7 +30,7 @@ class LoginsTable extends Table
         $userId = $login->userId();
         $time = $login->time();
 
-        $this->validateInt($userId, 'user id');
+        $this->validateId($userId, 'user id');
 
         $this->validateDatetime($time, 'time');
 
@@ -110,10 +110,30 @@ class LoginsTable extends Table
         $stmt = $this->connection->prepare('SELECT * FROM logins WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], /*(int)*/ $row['id']);
-            return $user;
+            $login = new Login((int) $row['user_id'], $row['time'], (int) $row['id']);
+            return $login;
         }
-        return new User();
+        return new Login();
+    }
+
+    /**
+     * Retrieve a Login from the table by user id
+     *
+     * @param int $userId the id of the user to retrieve logins of
+     *
+     * @return Login[]
+     */
+    public function readByUserId($userId)
+    {
+        $logins = array();
+        $this->validateId($userId, 'user id');
+        $stmt = $this->connection->prepare('SELECT * FROM logins WHERE user_id = ?');
+        if ($stmt->execute(array($userId))) {
+            while ($row = $stmt->fetch()) {
+                $logins[] = new Login((int) $row['user_id'], $row['time'], (int) $row['id']);
+            }
+        }
+        return $logins;
     }
 
     /**
