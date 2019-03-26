@@ -907,6 +907,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUser()
     {
+        $this->expectException(NotFoundException::class);
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
         $dbId = (int) $this->dbTable->getValue(2, 'id');
@@ -917,16 +918,6 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->usersTable->delete($dbId);
 
         $user = $this->usersTable->readById($dbId);
-
-        $id = $user->id();
-        $username = $user->username();
-        $email = $user->email();
-        $password = $user->password();
-
-        $this->assertEquals(null, $id);
-        $this->assertEquals(null, $username);
-        $this->assertEquals(null, $email);
-        $this->assertEquals(null, $password);
     }
 
     /**

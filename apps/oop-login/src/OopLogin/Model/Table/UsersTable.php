@@ -143,8 +143,10 @@ class UsersTable extends Table
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
         if ($stmt->execute(array($username))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
-            return $user;
+            if ($row) {
+                $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
+                return $user;
+            }
         }
         return new User();
     }
@@ -181,10 +183,12 @@ class UsersTable extends Table
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
-            return $user;
+            if ($row) {
+                $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
+                return $user;
+            }
         }
-        return new User();
+        throw new NotFoundException('No user with the given id was found.');
     }
 
     /**
@@ -200,9 +204,6 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validateUsername($username);
         $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
         try {
             $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
             $stmt->execute(array(':username' => $username, ':id' => $id));
@@ -226,9 +227,6 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validateEmail($email);
         $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
         try {
             $stmt = $this->connection->prepare('UPDATE users SET email = :email WHERE id = :id');
             $stmt->execute(array(':email' => $email, ':id' => $id));
@@ -249,9 +247,6 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validatePassword($password);
         $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
         $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
         $stmt->execute(array(':password' => $password, ':id' => $id));
     }
@@ -267,9 +262,6 @@ class UsersTable extends Table
     {
         $this->validateId($id);
         $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
         $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
         $stmt->execute(array(':id' => $id));
     }
