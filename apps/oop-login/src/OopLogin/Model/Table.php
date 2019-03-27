@@ -120,6 +120,24 @@ class Table
     }
 
     /**
+     * Validate entity's existence
+     * 
+     * @param mixed $entity the table entity
+     * @param string $entityName the class name of the entityy
+     * @param string $fieldName the name of the entry field used for search
+     * 
+     * @throws OopLogin\Exception\NotFoundException
+     * 
+     * @return void
+     */
+    protected function validateEntity($entity, $entityName, $fieldName = 'id')
+    {
+        if (is_null($entity)) {
+            throw new NotFoundException('No ' . $entityName . ' with the given ' . $fieldName . ' was found.');
+        }
+    }
+
+    /**
      * Get the PDO connection
      *
      * @return PDO

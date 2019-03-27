@@ -148,7 +148,7 @@ class UsersTable extends Table
                 return $user;
             }
         }
-        return new User();
+        return null;
     }
 
     /**
@@ -164,10 +164,12 @@ class UsersTable extends Table
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
         if ($stmt->execute(array($email))) {
             $row = $stmt->fetch();
-            $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
-            return $user;
+            if ($row) {
+                $user = new User($row['username'], $row['email'], $row['password'], (int) $row['id']);
+                return $user;
+            }
         }
-        return new User();
+        return null;
     }
 
     /**
@@ -188,7 +190,7 @@ class UsersTable extends Table
                 return $user;
             }
         }
-        throw new NotFoundException('No user with the given id was found.');
+        return null;
     }
 
     /**
@@ -204,6 +206,7 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validateUsername($username);
         $user = $this->readById($id);
+        $this->validateEntity($user, 'user');
         try {
             $stmt = $this->connection->prepare('UPDATE users SET username = :username WHERE id = :id');
             $stmt->execute(array(':username' => $username, ':id' => $id));
@@ -227,6 +230,7 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validateEmail($email);
         $user = $this->readById($id);
+        $this->validateEntity($user, 'user', 'email');
         try {
             $stmt = $this->connection->prepare('UPDATE users SET email = :email WHERE id = :id');
             $stmt->execute(array(':email' => $email, ':id' => $id));
@@ -247,6 +251,7 @@ class UsersTable extends Table
         $this->validateId($id);
         $this->validatePassword($password);
         $user = $this->readById($id);
+        $this->validateEntity($user, 'user', 'password');
         $stmt = $this->connection->prepare('UPDATE users SET password = :password WHERE id = :id');
         $stmt->execute(array(':password' => $password, ':id' => $id));
     }
@@ -262,7 +267,9 @@ class UsersTable extends Table
     {
         $this->validateId($id);
         $user = $this->readById($id);
+        $this->validateEntity($user, 'user', 'password');
         $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
         $stmt->execute(array(':id' => $id));
     }
+
 }

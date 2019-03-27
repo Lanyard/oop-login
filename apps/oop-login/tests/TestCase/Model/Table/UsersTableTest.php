@@ -385,6 +385,20 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Test username existence validation when reading by username
+     */
+    public function testReadUserByUsernameExistence()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $nonexistentUsername = 'x';
+
+        $user = $this->usersTable->readByUsername($nonexistentUsername);
+
+        $this->assertNull($user);
+    }
+
+    /**
      * Test reading one user by email
      */
     public function testReadUserByEmail()
@@ -455,7 +469,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test email length validation while reding by email
+     * Test email length validation while reading by email
      */
     public function testReadUserByEmailLength()
     {
@@ -466,6 +480,20 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $invalidEmail = 'XzGlxOXOX5WBIHwc7uBxQS0p2lYf6XDgSHq2ZPkBliI1bAsNStOE8Gs7onG7FRcqsjuLoeOzFZS5DkP8IWJeqEcvgA4MMx3QqvltsCpPh1IUR5Pn3GMbqQo0K3zluHYmuFBneFH5tRlheZ6tOFFYphU1frUYPUcFSLhoA1JVN5P0DoEHgkZUgDBK21AbyiBHtGTrHCxlIFf1100Jb3svnZ6m750tGhAKpw7l4mrpNZHINlpQWjDTXCJIkoCC4A6Z';
 
         $user = $this->usersTable->readByEmail($invalidEmail);
+    }
+
+    /**
+     * Test email existence validation when reading by email
+     */
+    public function testReadUserByEmailExistence()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $nonexistentEmail = 'x';
+
+        $user = $this->usersTable->readByEmail($nonexistentEmail);
+
+        $this->assertNull($user);
     }
 
     /**
@@ -534,6 +562,19 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
 
         $invalidId = -1;
         $user = $this->usersTable->readById($invalidId);
+    }
+
+    /**
+     * Test id existence validation when reading user by id
+     */
+    public function testReadUserByIdExistence()
+    {
+        $this->insertDataSet($this->getDataSet('read-username'), 'users');
+
+        $nonexistentId = 28;
+        $user = $this->usersTable->readById($nonexistentId);
+
+        $this->assertNull($user);
     }
 
     /**
@@ -778,7 +819,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test id existence when updating email
+     * Test id existence validation when updating email
      */
     public function testUpdateEmailIdExistence()
     {
@@ -888,7 +929,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test id existence when updating password
+     * Test id existence validation when updating password
      */
     public function testUpdatePasswordIdExistence()
     {
@@ -907,7 +948,6 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUser()
     {
-        $this->expectException(NotFoundException::class);
         $this->insertDataSet($this->getDataSet('read-username'), 'users');
 
         $dbId = (int) $this->dbTable->getValue(2, 'id');
@@ -918,6 +958,8 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->usersTable->delete($dbId);
 
         $user = $this->usersTable->readById($dbId);
+
+        $this->assertNull($user);
     }
 
     /**
@@ -949,7 +991,7 @@ class UsersTableTest extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Test id existence when deleting a User
+     * Test id existence validation when deleting a User
      */
     public function testDeleteUserIdExistence()
     {
