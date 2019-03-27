@@ -77,7 +77,7 @@ class LoginsTable extends Table
                 return $login;
             }
         }
-        return new Login();
+        return null;
     }
 
     /**

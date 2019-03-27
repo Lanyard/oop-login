@@ -308,14 +308,7 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->loginsTable->delete($dbId);
 
         $login = $this->loginsTable->readById($dbId);
-
-        $userId = $login->userId();
-        $time = $login->time();
-        $id = $login->id();
-
-        $this->assertSame(null, $userId);
-        $this->assertSame(null, $time);
-        $this->assertSame(null, $id);
+        $this->assertNull($login);
     }
 
     /**
