@@ -18,6 +18,18 @@ use PDOException;
  */
 class LoginsTable extends Table
 {
+
+    /**
+     * Validate User id field for the table
+     *
+     * @param int $id The User id to validate
+     *
+     * @return void
+     */
+    protected function validateUserId($id)
+    {
+        $this->validateId($id, 'user id');
+    }
     /**
      * Add a Login to the table
      *
@@ -30,7 +42,7 @@ class LoginsTable extends Table
         $userId = $login->userId();
         $time = $login->time();
 
-        $this->validateId($userId, 'user id');
+        $this->validateUserId($userId);
 
         $this->validateDatetime($time, 'time');
 
@@ -68,7 +80,7 @@ class LoginsTable extends Table
      */
     public function readById($id)
     {
-        $this->validateId($id, 'id');
+        $this->validateId($id);
         $stmt = $this->connection->prepare('SELECT * FROM logins WHERE id = ? LIMIT 1');
         if ($stmt->execute(array($id))) {
             $row = $stmt->fetch();
@@ -90,7 +102,7 @@ class LoginsTable extends Table
     public function readByUserId($userId)
     {
         $logins = array();
-        $this->validateId($userId, 'user id');
+        $this->validateUserId($userId);
         $stmt = $this->connection->prepare('SELECT * FROM logins WHERE user_id = ?');
         if ($stmt->execute(array($userId))) {
             while ($row = $stmt->fetch()) {
