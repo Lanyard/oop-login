@@ -123,7 +123,7 @@ class Table
      * Validate entity's existence
      * 
      * @param mixed $entity the table entity
-     * @param string $entityName the class name of the entityy
+     * @param string $entityName the class name of the entity
      * @param string $fieldName the name of the entry field used for search
      * 
      * @throws OopLogin\Exception\NotFoundException
@@ -134,6 +134,24 @@ class Table
     {
         if (is_null($entity)) {
             throw new NotFoundException('No ' . $entityName . ' with the given ' . $fieldName . ' was found.');
+        }
+    }
+
+    /**
+     * Validate entities' existence in array
+     *
+     * @param array $entities the array of table entities
+     * @param string $entitiesName the plural of the entity's class name
+     * @param string $fieldName the name of the entry field used for search
+     *
+     * @throws OopLogin\Exception\NotFoundException
+     *
+     * @return void
+     */
+    protected function validateEntities($entities, $entitiesName, $fieldName = 'id')
+    {
+        if (empty($entities)) {
+            throw new NotFoundException('No ' . $entitiesName . ' with the given ' . $fieldName . ' were found.');
         }
     }
 

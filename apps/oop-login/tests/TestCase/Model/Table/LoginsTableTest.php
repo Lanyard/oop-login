@@ -356,4 +356,65 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
         $this->loginsTable->delete($nonexistentId);
     }
 
+    /**
+     * Test deleting Logins by User id
+     */
+
+    public function testDeleteLoginsByUser()
+    {
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $userId = (int) $this->dbTable->getValue(0, 'user_id');
+
+        $this->loginsTable->deleteByUserId($userId);
+
+        $logins = $this->loginsTable->readByUserId($userId);
+
+        $this->assertEmpty($logins);
+    }
+
+    /**
+     * Test User id value validation when deleting Logins by User id
+     */
+
+    public function testDeleteLoginsByUserIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $invalidId = -1;
+
+        $this->loginsTable->deleteByUserId($invalidId);
+    }
+
+    /**
+     * Test User id type validation when deleting Logins by User id
+     */
+
+    public function testDeleteLoginsByUserIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $invalidId = 'x';
+
+        $this->loginsTable->deleteByUserId($invalidId);
+    }
+
+    /**
+     * Test User id existence when deleting Logins by User id
+     */
+
+    public function testDeleteLoginsByUserIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $nonexistentId = 293;
+
+        $this->loginsTable->deleteByUserId($nonexistentId);
+    }
 }

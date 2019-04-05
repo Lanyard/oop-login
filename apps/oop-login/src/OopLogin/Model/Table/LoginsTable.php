@@ -117,8 +117,6 @@ class LoginsTable extends Table
      *
      * @param int $id The id of the Login to delete
      *
-     * @throws OopLogin/Exception/NotFoundException
-     *
      * @return void
      */
     public function delete($id)
@@ -127,6 +125,21 @@ class LoginsTable extends Table
         $this->validateEntity($login, 'login', 'id');
         $stmt = $this->connection->prepare('DELETE FROM logins WHERE id = :id');
         $stmt->execute(array(':id' => $id));
+    }
+
+    /**
+     * Delete Logins by User id
+     *
+     * @param int $userId The id of the User to delete Logins by
+     *
+     * @return void
+     */
+    public function deleteByUserId($userId)
+    {
+        $logins = $this->readByUserId($userId);
+        $this->validateEntities($logins, 'logins', 'user id');
+        $stmt = $this->connection->prepare('DELETE FROM logins WHERE user_id = :userId');
+        $stmt->execute(array(':userId' => $userId));
     }
 
 }
