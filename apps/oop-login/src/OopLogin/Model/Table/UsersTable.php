@@ -19,7 +19,7 @@ use PDOException;
 class UsersTable extends Table
 {
     /**
-     * Validate all needed User fields for the table
+     * Validate username for the table
      *
      * @param string $username the User's username
      *
@@ -31,7 +31,7 @@ class UsersTable extends Table
     }
 
     /**
-     * Validate all needed User fields for the table
+     * Validate email for the table
      *
      * @param string $email the User's email
      *
@@ -43,7 +43,7 @@ class UsersTable extends Table
     }
 
     /**
-     * Validate all needed User fields for the table
+     * Validate password for the table
      *
      * @param string $password the User's password
      *
