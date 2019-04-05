@@ -122,16 +122,10 @@ class LoginsTable extends Table
     public function delete($id)
     {
         $login = $this->readById($id);
+        if (is_null($login)) {
+            throw new NotFoundException('No login with the given id was found.');
+        }
         $stmt = $this->connection->prepare('DELETE FROM logins WHERE id = :id');
         $stmt->execute(array(':id' => $id));
-        /*
-        $this->validateId($id);
-        $user = $this->readById($id);
-        if ($user->id() == null) {
-            throw new NotFoundException('No user with the given id was found.');
-        }
-        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
-        $stmt->execute(array(':id' => $id));
-        */
     }
 }

@@ -315,12 +315,45 @@ class LoginsTableTest extends PHPUnit_Extensions_Database_TestCase
      * Test id value validation when deleting a Login
      */
 
+    public function testDeleteLoginIdValue()
+    {
+        $this->expectException(DomainException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $invalidId = -1;
+
+        $this->loginsTable->delete($invalidId);
+    }
+
     /**
      * Test id type validation when deleting a Login
      */
 
+    public function testDeleteLoginIdType()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $invalidId = 'x';
+
+        $this->loginsTable->delete($invalidId);
+    }
+
     /**
      * Test id existence when deleting a Login
      */
+
+    public function testDeleteLoginIdExistence()
+    {
+        $this->expectException(NotFoundException::class);
+
+        $this->insertDataSet($this->getDataSet('read-login'), 'logins');
+
+        $nonexistentId = 293;
+
+        $this->loginsTable->delete($nonexistentId);
+    }
 
 }
