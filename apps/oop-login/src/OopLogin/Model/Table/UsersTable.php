@@ -197,7 +197,6 @@ class UsersTable extends Table
      * Update a User's username
      *
      * @param int $id The id of the user to update
-     * @throws OopLogin\Exception\NotFoundException
      *
      * @return void
      */
@@ -220,7 +219,6 @@ class UsersTable extends Table
      * Update a User's email
      *
      * @param int $id The id of the user to update
-     * @throws OopLogin\Exception\NotFoundException
      *
      * @return void
      */

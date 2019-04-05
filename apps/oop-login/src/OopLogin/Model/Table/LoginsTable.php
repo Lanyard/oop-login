@@ -117,6 +117,8 @@ class LoginsTable extends Table
      *
      * @param int $id The id of the Login to delete
      *
+     * @throws OopLogin/Exception/NotFoundException
+     *
      * @return void
      */
     public function delete($id)
