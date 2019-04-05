@@ -33,7 +33,7 @@ class LoginsTable extends Table
     /**
      * Add a Login to the table
      *
-     * @param Login $login The login to add to the table
+     * @param Login $login The Login to add to the table
      *
      * @return void
      */
@@ -74,7 +74,7 @@ class LoginsTable extends Table
     /**
      * Retrieve a Login from the table by id
      *
-     * @param int $id The id of the login to retrieve
+     * @param int $id The id of the Login to retrieve
      *
      * @return Login
      */
@@ -93,9 +93,9 @@ class LoginsTable extends Table
     }
 
     /**
-     * Retrieve Logins from the table by user id
+     * Retrieve Logins from the table by User id
      *
-     * @param int $userId the id of the user to retrieve logins of
+     * @param int $userId the id of the User to retrieve Logins of
      *
      * @return Login[]
      */
@@ -113,9 +113,9 @@ class LoginsTable extends Table
     }
 
     /**
-     * Delete a User
+     * Delete a Login
      *
-     * @param int $id The id of the User to delete
+     * @param int $id The id of the Login to delete
      *
      * @return void
      */
@@ -128,4 +128,5 @@ class LoginsTable extends Table
         $stmt = $this->connection->prepare('DELETE FROM logins WHERE id = :id');
         $stmt->execute(array(':id' => $id));
     }
+
 }
