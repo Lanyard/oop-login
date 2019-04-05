@@ -203,7 +203,6 @@ class UsersTable extends Table
      */
     public function updateUsername($id, $username)
     {
-        $this->validateId($id);
         $this->validateUsername($username);
         $user = $this->readById($id);
         $this->validateEntity($user, 'user');
@@ -227,7 +226,6 @@ class UsersTable extends Table
      */
     public function updateEmail($id, $email)
     {
-        $this->validateId($id);
         $this->validateEmail($email);
         $user = $this->readById($id);
         $this->validateEntity($user, 'user', 'email');
@@ -248,7 +246,6 @@ class UsersTable extends Table
      */
     public function updatePassword($id, $password)
     {
-        $this->validateId($id);
         $this->validatePassword($password);
         $user = $this->readById($id);
         $this->validateEntity($user, 'user', 'password');
@@ -265,7 +262,6 @@ class UsersTable extends Table
      */
     public function delete($id)
     {
-        $this->validateId($id);
         $user = $this->readById($id);
         $this->validateEntity($user, 'user', 'password');
         $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
